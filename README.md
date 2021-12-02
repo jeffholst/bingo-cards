@@ -1,6 +1,6 @@
 # Vue 3 + Vite
 
-## Shuffle alorithm
+## Shuffle algorithm
 
 [Fisher-Yates](https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array) shuffle algorithm.
 
