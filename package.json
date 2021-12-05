@@ -7,6 +7,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@aws-amplify/ui-vue": "^2.0.3",
+    "aws-amplify": "^4.3.10",
     "vue": "^3.2.16"
   },
   "devDependencies": {
