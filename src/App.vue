@@ -2,6 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 // import HelloWorld from './components/HelloWorld.vue'
+  import Card from './components/Card.vue'
   import { Authenticator } from "@aws-amplify/ui-vue";
   import "@aws-amplify/ui-vue/styles.css";
 
@@ -16,6 +17,7 @@
     <template v-slot="{ user, signOut }">
       <h1>Hello {{ user.username }}!</h1>
       <button @click="signOut">Sign Out</button>
+        <Card name="Jeff" />
     </template>
   </authenticator>
 </template>
