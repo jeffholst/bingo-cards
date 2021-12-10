@@ -4,6 +4,16 @@
 
 [Fisher-Yates](https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array) shuffle algorithm.
 
+## Amplify
+
+### Useful commands
+
+- amplify codegen models
+
+### Auth
+
+### API
+
 ## Bingo Items
 
 Fireball shot

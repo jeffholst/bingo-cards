@@ -26,5 +26,31 @@
         ]
       }
     }
+  },
+  "api": {
+    "bingocards": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authbingocards9de43b02"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 365,
+                "apiKeyExpirationDate": "2022-12-10T16:32:56.663Z",
+                "description": "bingo-cards"
+              }
+            }
+          ]
+        }
+      }
+    }
   }
 }
