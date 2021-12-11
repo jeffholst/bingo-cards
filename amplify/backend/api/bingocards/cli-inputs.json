@@ -5,16 +5,12 @@
     "serviceName": "AppSync",
     "gqlSchemaPath": "/Users/jeffholst/Repos/Jeff/Vue/bingo-cards/amplify/backend/api/bingocards/schema.graphql",
     "defaultAuthType": {
-      "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authbingocards9de43b02"
+      "mode": "API_KEY",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2022-12-11T20:03:03.864Z",
+      "keyDescription": "bingocards"
     },
-    "additionalAuthTypes": [
-      {
-        "mode": "API_KEY",
-        "expirationTime": 365,
-        "apiKeyExpirationDate": "2022-12-10T16:32:56.663Z",
-        "keyDescription": "bingo-cards"
-      }
-    ]
+    "conflictResolution": {},
+    "additionalAuthTypes": []
   }
 }

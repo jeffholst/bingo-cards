@@ -6,6 +6,7 @@ import { createItem, deleteItem } from './graphql/mutations'
 
 
 const getItemsAPI = async () => {
+  //const result = await API.graphql(graphqlOperation(listItems))
   const result = await API.graphql(graphqlOperation(listItems))
   return result.data.listItems.items
 }

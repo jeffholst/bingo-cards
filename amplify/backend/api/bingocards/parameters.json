@@ -2,10 +2,5 @@
   "AppSyncApiName": "bingocards",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "AuthCognitoUserPoolId": {
-    "Fn::GetAtt": [
-      "authbingocards9de43b02",
-      "Outputs.UserPoolId"
-    ]
-  }
+  "AuthModeLastUpdated": "2021-12-11T20:03:07.345Z"
 }

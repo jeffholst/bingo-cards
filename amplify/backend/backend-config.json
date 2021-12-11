@@ -1,6 +1,6 @@
 {
   "auth": {
-    "bingocards9de43b02": {
+    "bingocardsab6e2c88": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -34,21 +34,14 @@
       "output": {
         "authConfig": {
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authbingocards9de43b02"
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 365,
+              "apiKeyExpirationDate": "2022-12-11T20:03:03.864Z",
+              "description": "bingocards"
             }
           },
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "API_KEY",
-              "apiKeyConfig": {
-                "apiKeyExpirationDays": 365,
-                "apiKeyExpirationDate": "2022-12-10T16:32:56.663Z",
-                "description": "bingo-cards"
-              }
-            }
-          ]
+          "additionalAuthenticationProviders": []
         }
       }
     }
