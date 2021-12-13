@@ -25,7 +25,7 @@
 
 <template>
     <h1>Admin Area</h1>
-    <input v-model="newItem" @keyup.enter="addItem">
+    <input v-model="newItem" @keyup.enter="addItem" class="border-2">
     <button @click="addItem">Add Item</button>
     <div v-for="item in items" :key="item.id">
         {{ item.text }} <button @click="removeItem(item.id)">X</button>
