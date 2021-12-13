@@ -39,8 +39,8 @@ function changeNav(pageName) {
         <div class="flex justify-between h-16">
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
-              <img class="block lg:hidden h-8 w-auto" src="HCR-SM.png" alt="HCR Bingo" />
-              <img class="hidden lg:block h-8 w-auto" src="HCR-SM.png" alt="HCR Bingo" />
+              <img class="block lg:hidden h-8 w-auto" src="./assets/HCR-SM.png" alt="HCR Bingo" />
+              <img class="hidden lg:block h-8 w-auto" src="./assets/HCR-SM.png" alt="HCR Bingo" />
               <h2 style="padding-left: 20px">Hidden Creek Ranch</h2>
             </div>
             <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
