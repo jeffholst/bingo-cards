@@ -53,7 +53,7 @@ function changeNav(pageName) {
             <!-- Profile dropdown -->
             <Menu as="div" class="ml-3 relative">
               <div>
-                <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']" @click="signOut">
+                <a href="#" :class="['block px-4 py-2 text-sm text-gray-700']" @click="signOut">
                       Sign Out
                 </a>
                 
