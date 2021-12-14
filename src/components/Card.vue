@@ -98,12 +98,14 @@
                 console.log("Card from database")
                 items.value = res
                 localStorage.setItem(props.username, JSON.stringify(res))
+                checkForBingo()
             }
             else {
                 const tmp = localStorage.getItem(props.username);
                 if (tmp) {
                     console.log("Card from local storage")
                     items.value = JSON.parse(tmp)
+                    checkForBingo()
                 } else {
                     // try to get from server   
                     getItemsAPI().then(res => {
@@ -120,6 +122,7 @@
                         localStorage.setItem(props.username, JSON.stringify(res))
                         items.value = res
                         insertAllItems()
+                        checkForBingo()
                     })
                 }
             }

@@ -12,11 +12,11 @@ const items = ref([])
 const nickName = ref("")
 
 function isRequiredFirstName(value) {
-  return value ? true : "First Name is required"
+  return value ? true : "Looks like you forgot yer first name"
 }
 
 function isRequiredLastName(value) {
-  return value ? true : "Last Name is required"
+  return value ? true : "Looks like you forgot yer last name"
 }
 
 function onSubmit(values) {
@@ -39,13 +39,13 @@ getNickNamesAPI().then(res => {
 </script>
 
 <template>
-  <Form @submit="onSubmit" class="grid grid-cols-1 gap-y-6">
-    <div>
+  <Form @submit.prevent="onSubmit" class="grid grid-cols-1 gap-y-6">
+    <p class="text-left">
       <Field
         name="first-name"
         type="name"
         :rules="isRequiredFirstName"
-        placeholder="First Name"
+        placeholder="What's yer first name partner?"
         class="
           block
           w-full
@@ -58,17 +58,20 @@ getNickNamesAPI().then(res => {
           rounded-md
         "
       />
-      <ErrorMessage name="first-name" class="text-red-500" />
+      <ErrorMessage name="first-name" class="text-red-500" style="padding-left: 18px;"/>
+    </p>
+    <div class="text-lg">
+        Yer Cowboy Name
     </div>
     <div>
-      <button @click="changeNickName">'{{ nickName }}'</button>
+      <button type="button" @click="changeNickName" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">'{{ nickName }}'</button>
     </div>
-    <div>
+    <p class="text-left">
       <Field
         name="last-name"
         type="name"
         :rules="isRequiredLastName"
-        placeholder="Last Name"
+        placeholder="What's yer last name partner?"
         class="
           block
           w-full
@@ -81,10 +84,10 @@ getNickNamesAPI().then(res => {
           rounded-md
         "
       />
-      <ErrorMessage name="last-name" class="text-red-500" />
-    </div>
+      <ErrorMessage name="last-name" class="text-red-500" style="padding-left: 18px;" />
+    </p>
     <div>
-      <button>Submit</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">Giddy Up</button>
     </div>
   </Form>
 </template>
