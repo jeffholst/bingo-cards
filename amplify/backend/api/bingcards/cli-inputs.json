@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "bingcards",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "/Users/jeffholst/Repos/Jeff/Vue/bingo-cards/amplify/backend/api/bingcards/schema.graphql",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2022-12-14T19:30:39.676Z",
+      "keyDescription": "bingocards"
+    }
+  }
+}

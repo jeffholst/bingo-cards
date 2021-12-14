@@ -1,0 +1,5 @@
+{
+  "AppSyncApiName": "bingcards",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false
+}

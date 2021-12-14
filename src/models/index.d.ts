@@ -12,6 +12,10 @@ type CardMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type ScoreMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 export declare class Item {
   readonly id: string;
   readonly text: string;
@@ -31,4 +35,15 @@ export declare class Card {
   readonly updatedAt?: string;
   constructor(init: ModelInit<Card, CardMetaData>);
   static copyOf(source: Card, mutator: (draft: MutableModel<Card, CardMetaData>) => MutableModel<Card, CardMetaData> | void): Card;
+}
+
+export declare class Score {
+  readonly id: string;
+  readonly owner?: string;
+  readonly score?: number;
+  readonly bingo?: boolean;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  constructor(init: ModelInit<Score, ScoreMetaData>);
+  static copyOf(source: Score, mutator: (draft: MutableModel<Score, ScoreMetaData>) => MutableModel<Score, ScoreMetaData> | void): Score;
 }
