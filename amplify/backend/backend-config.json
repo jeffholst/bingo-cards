@@ -1,6 +1,6 @@
 {
   "auth": {
-    "bingocardsab6e2c88": {
+    "bingcards78890584": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -24,25 +24,6 @@
         "verificationMechanisms": [
           "EMAIL"
         ]
-      }
-    }
-  },
-  "api": {
-    "bingocards": {
-      "service": "AppSync",
-      "providerPlugin": "awscloudformation",
-      "output": {
-        "authConfig": {
-          "defaultAuthentication": {
-            "authenticationType": "API_KEY",
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 365,
-              "apiKeyExpirationDate": "2022-12-11T20:03:03.864Z",
-              "description": "bingocards"
-            }
-          },
-          "additionalAuthenticationProviders": []
-        }
       }
     }
   }

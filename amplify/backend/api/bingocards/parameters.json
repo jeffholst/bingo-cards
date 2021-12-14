@@ -1,6 +1,0 @@
-{
-  "AppSyncApiName": "bingocards",
-  "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2021-12-11T20:03:07.345Z"
-}

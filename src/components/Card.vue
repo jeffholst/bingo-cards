@@ -1,9 +1,10 @@
 <script setup>
     import { ref } from 'vue'
-    import { getItemsAPI } from '../api'
+    import { getItemsAPI, addCardAPI, syncCardAPI, getCardAPI } from '../api'
+    import { v4 as uuidv4 } from 'uuid';
 
-    defineProps({
-    name: String
+    const props = defineProps({
+        username: String
     })
 
     const items = ref([])
@@ -70,6 +71,8 @@
         const result = items.value.find( ({ id }) => id === findId );
         result.selected = !result.selected;
         checkForBingo()
+        localStorage.setItem(props.username, JSON.stringify(items.value))
+        syncCardAPI(findId, result.selected)
     }
 
     function shuffle(array) {
@@ -89,11 +92,56 @@
 
         return array;
     }
-    getItemsAPI().then(res => {
-        shuffle(res);
-        res.length = 25
-        items.value = res
-    })
+    
+    function initializePage() {
+        const tmp = localStorage.getItem(props.username);
+        if (tmp) {
+            console.log("Card from local storage")
+            items.value = JSON.parse(tmp)
+        } else {
+            // try to get from server
+            getCardAPI(props.username).then(res => {
+                if (res.length > 0) {
+                    console.log("Card from database")
+                    items.value = res
+                    localStorage.setItem(props.username, JSON.stringify(res))
+                }
+                else {
+                    console.log("Card created")
+                    getItemsAPI().then(res => {
+                        shuffle(res);
+                        res.length = 25 // only keep 25 items
+                        for (var loop = 0; loop < res.length; loop++) {
+                            res[loop].id = uuidv4()
+                            res[loop].selected = false
+                            res[loop].synced = false
+                            res[loop].sortOrder = loop
+                            res[loop].owner = props.username
+                        }
+                        localStorage.setItem(props.username, JSON.stringify(res))
+                        items.value = res
+                        insertAllItems()
+                    })
+                }
+            })
+        }
+    }
+
+    function insertAllItems() {
+        for (var loop = 0; loop < items.value.length; loop++) {
+
+            const myCard = { id: items.value[loop].id,
+                text: items.value[loop].text,
+                selected: items.value[loop].selected,
+                sortOrder: items.value[loop].sortOrder,
+                owner: items.value[loop].owner} 
+
+            addCardAPI(myCard)
+        }
+    }
+
+    //initializePage()
+    
 </script>
 
 <template>

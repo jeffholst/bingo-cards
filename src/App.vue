@@ -99,7 +99,7 @@ function changeNav(pageName) {
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
-          <Card v-show="currentPage === 'Bingo'" name="Jeff" />
+          <Card v-show="currentPage === 'Bingo'" :username='user.username' />
           <Admin v-if="currentPage === 'Admin'"/>
           <!-- /End replace -->
         </div>

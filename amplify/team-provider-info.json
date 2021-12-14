@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-bingocards-dev-115307-authRole",
-      "UnauthRoleArn": "arn:aws:iam::611396076109:role/amplify-bingocards-dev-115307-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::611396076109:role/amplify-bingocards-dev-115307-authRole",
+      "AuthRoleName": "amplify-bingcards-dev-132017-authRole",
+      "UnauthRoleArn": "arn:aws:iam::611396076109:role/amplify-bingcards-dev-132017-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::611396076109:role/amplify-bingcards-dev-132017-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-bingocards-dev-115307-deployment",
-      "UnauthRoleName": "amplify-bingocards-dev-115307-unauthRole",
-      "StackName": "amplify-bingocards-dev-115307",
-      "StackId": "arn:aws:cloudformation:us-east-1:611396076109:stack/amplify-bingocards-dev-115307/351bbb00-5aab-11ec-92b3-1213fdb3e837",
-      "AmplifyAppId": "dsgrcpvsvst9o"
+      "DeploymentBucketName": "amplify-bingcards-dev-132017-deployment",
+      "UnauthRoleName": "amplify-bingcards-dev-132017-unauthRole",
+      "StackName": "amplify-bingcards-dev-132017",
+      "StackId": "arn:aws:cloudformation:us-east-1:611396076109:stack/amplify-bingcards-dev-132017/e12203a0-5d12-11ec-bf0f-125e3e62c00b",
+      "AmplifyAppId": "d1nkoifb4uykae"
     },
     "categories": {
       "auth": {
-        "bingocardsab6e2c88": {}
+        "bingcards78890584": {}
       }
     }
   }
