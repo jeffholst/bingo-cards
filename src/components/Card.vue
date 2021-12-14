@@ -140,7 +140,7 @@
         }
     }
 
-    //initializePage()
+    initializePage()
     
 </script>
 
