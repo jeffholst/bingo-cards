@@ -95,6 +95,10 @@ export const createScore = /* GraphQL */ `
   ) {
     createScore(input: $input, condition: $condition) {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
@@ -110,6 +114,10 @@ export const updateScore = /* GraphQL */ `
   ) {
     updateScore(input: $input, condition: $condition) {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
@@ -125,9 +133,52 @@ export const deleteScore = /* GraphQL */ `
   ) {
     deleteScore(input: $input, condition: $condition) {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createNickName = /* GraphQL */ `
+  mutation CreateNickName(
+    $input: CreateNickNameInput!
+    $condition: ModelNickNameConditionInput
+  ) {
+    createNickName(input: $input, condition: $condition) {
+      id
+      text
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateNickName = /* GraphQL */ `
+  mutation UpdateNickName(
+    $input: UpdateNickNameInput!
+    $condition: ModelNickNameConditionInput
+  ) {
+    updateNickName(input: $input, condition: $condition) {
+      id
+      text
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteNickName = /* GraphQL */ `
+  mutation DeleteNickName(
+    $input: DeleteNickNameInput!
+    $condition: ModelNickNameConditionInput
+  ) {
+    deleteNickName(input: $input, condition: $condition) {
+      id
+      text
       createdAt
       updatedAt
     }

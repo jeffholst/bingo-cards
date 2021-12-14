@@ -17,7 +17,16 @@ type Card @model {
 
 type Score @model {
   id: ID!
+  firstName: String
+  nickName: String
+  lastName: String
+  email: String
   owner: String
   score: Int
   bingo: Boolean
+}
+
+type NickName @model {
+  id: ID!
+  text: String!
 }

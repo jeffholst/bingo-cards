@@ -1,6 +1,6 @@
 <script setup>
     import { ref } from 'vue'
-    import { getItemsAPI, addItemAPI, deleteItemAPI } from '../api'
+    import { getNickNamesAPI, addNickNameAPI, deleteNickNameAPI } from '../api'
     import { v4 as uuidv4 } from 'uuid';
 
     const items = ref([])
@@ -8,24 +8,30 @@
 
     function removeItem(id) {
         items.value = items.value.filter(item => item.id !== id)
-        deleteItemAPI(id)
+        deleteNickNameAPI(id)
     }
 
     function addItem() {
         if (newItem.value) {
             const item = { id: uuidv4(), text: newItem.value };
             items.value.push(item)
-            addItemAPI(item)
+            addNickNameAPI(item)
             newItem.value = ''
         }
     }
 
-    getItemsAPI().then(res => items.value = res)
+    const propComparator = (propName) =>
+  (a, b) => a[propName] == b[propName] ? 0 : a[propName] < b[propName] ? -1 : 1
+
+    getNickNamesAPI().then(res => {
+        res.sort(propComparator('text'))
+        items.value = res
+    })
 </script>
 
 <template>
     <div>
-        <h1>Admin Area</h1>
+        <h1>NickNames</h1>
         <input v-model="newItem" @keyup.enter="addItem" class="border-2">
         <button @click="addItem">Add Item</button>
         <div v-for="item in items" :key="item.id">

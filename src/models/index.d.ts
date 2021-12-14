@@ -16,6 +16,10 @@ type ScoreMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type NickNameMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 export declare class Item {
   readonly id: string;
   readonly text: string;
@@ -39,6 +43,10 @@ export declare class Card {
 
 export declare class Score {
   readonly id: string;
+  readonly firstName?: string;
+  readonly nickName?: string;
+  readonly lastName?: string;
+  readonly email?: string;
   readonly owner?: string;
   readonly score?: number;
   readonly bingo?: boolean;
@@ -46,4 +54,13 @@ export declare class Score {
   readonly updatedAt?: string;
   constructor(init: ModelInit<Score, ScoreMetaData>);
   static copyOf(source: Score, mutator: (draft: MutableModel<Score, ScoreMetaData>) => MutableModel<Score, ScoreMetaData> | void): Score;
+}
+
+export declare class NickName {
+  readonly id: string;
+  readonly text: string;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  constructor(init: ModelInit<NickName, NickNameMetaData>);
+  static copyOf(source: NickName, mutator: (draft: MutableModel<NickName, NickNameMetaData>) => MutableModel<NickName, NickNameMetaData> | void): NickName;
 }

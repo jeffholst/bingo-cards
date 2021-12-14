@@ -65,6 +65,10 @@ export const getScore = /* GraphQL */ `
   query GetScore($id: ID!) {
     getScore(id: $id) {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
@@ -82,9 +86,40 @@ export const listScores = /* GraphQL */ `
     listScores(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        firstName
+        nickName
+        lastName
+        email
         owner
         score
         bingo
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getNickName = /* GraphQL */ `
+  query GetNickName($id: ID!) {
+    getNickName(id: $id) {
+      id
+      text
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listNickNames = /* GraphQL */ `
+  query ListNickNames(
+    $filter: ModelNickNameFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listNickNames(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        text
         createdAt
         updatedAt
       }

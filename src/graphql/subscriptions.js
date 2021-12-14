@@ -74,6 +74,10 @@ export const onCreateScore = /* GraphQL */ `
   subscription OnCreateScore {
     onCreateScore {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
@@ -86,6 +90,10 @@ export const onUpdateScore = /* GraphQL */ `
   subscription OnUpdateScore {
     onUpdateScore {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
@@ -98,9 +106,43 @@ export const onDeleteScore = /* GraphQL */ `
   subscription OnDeleteScore {
     onDeleteScore {
       id
+      firstName
+      nickName
+      lastName
+      email
       owner
       score
       bingo
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateNickName = /* GraphQL */ `
+  subscription OnCreateNickName {
+    onCreateNickName {
+      id
+      text
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateNickName = /* GraphQL */ `
+  subscription OnUpdateNickName {
+    onUpdateNickName {
+      id
+      text
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteNickName = /* GraphQL */ `
+  subscription OnDeleteNickName {
+    onDeleteNickName {
+      id
+      text
       createdAt
       updatedAt
     }

@@ -63,7 +63,6 @@
             }
             l1++
         }
-        console.log(won)
         hasBingo.value = won
     }
 
@@ -94,21 +93,21 @@
     }
     
     function initializePage() {
-        const tmp = localStorage.getItem(props.username);
-        if (tmp) {
-            console.log("Card from local storage")
-            items.value = JSON.parse(tmp)
-        } else {
-            // try to get from server
-            getCardAPI(props.username).then(res => {
-                if (res.length > 0) {
-                    console.log("Card from database")
-                    items.value = res
-                    localStorage.setItem(props.username, JSON.stringify(res))
-                }
-                else {
-                    console.log("Card created")
+        getCardAPI(props.username).then(res => {
+            if (res.length > 0) {
+                console.log("Card from database")
+                items.value = res
+                localStorage.setItem(props.username, JSON.stringify(res))
+            }
+            else {
+                const tmp = localStorage.getItem(props.username);
+                if (tmp) {
+                    console.log("Card from local storage")
+                    items.value = JSON.parse(tmp)
+                } else {
+                    // try to get from server   
                     getItemsAPI().then(res => {
+                        console.log("Card created")
                         shuffle(res);
                         res.length = 25 // only keep 25 items
                         for (var loop = 0; loop < res.length; loop++) {
@@ -123,8 +122,8 @@
                         insertAllItems()
                     })
                 }
-            })
-        }
+            }
+        })
     }
 
     function insertAllItems() {

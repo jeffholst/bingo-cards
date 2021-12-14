@@ -4,7 +4,9 @@
 // import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue'
 import Card from './components/Card.vue'
-import Admin from './components/Admin.vue'
+import Items from './components/Items.vue'
+import Profile from './components/Profile.vue'
+import NickNames from './components/NickNames.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 
@@ -13,7 +15,9 @@ const currentPage = ref('Bingo')
 const navigation = [
   { name: 'Bingo', href: '#', current: true },
   { name: 'Scoreboard', href: '#', current: false },
-  { name: 'Admin', href: '#', current: false },
+  { name: 'Profile', href: '#', current: false },
+  { name: 'Items', href: '#', current: false },
+  { name: 'NickNames', href: '#', current: false },
 ]
 
 function changeNav(pageName) {
@@ -100,7 +104,9 @@ function changeNav(pageName) {
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
           <Card v-show="currentPage === 'Bingo'" :username='user.username' />
-          <Admin v-if="currentPage === 'Admin'"/>
+          <Profile v-show="currentPage === 'Profile'" :username='user.username' />
+          <Items v-if="currentPage === 'Items'"/>
+          <NickNames v-if="currentPage === 'NickNames'"/>
           <!-- /End replace -->
         </div>
       </main>
