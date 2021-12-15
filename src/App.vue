@@ -4,33 +4,107 @@
 // import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue'
 import Card from './components/Card.vue'
+import Scorecard from './components/Scorecard.vue'
 import Items from './components/Items.vue'
 import Profile from './components/Profile.vue'
 import NickNames from './components/NickNames.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
+import { Hub } from 'aws-amplify';
+import { getScoreAPI, addScoreAPI } from './api'
+
+const listener = (data) => {
+  console.log('Got here')
+  switch (data.payload.event) {
+    case 'signIn':
+      userSignedIn(data)
+      break;
+    case 'signUp':
+      console.log('user signed up');
+      break;
+    case 'signOut':
+      console.log('user signed out');
+      break;
+    case 'signIn_failure':
+      console.log('user sign in failed');
+      break;
+    default:
+      console.log('unknown event');
+      break;
+  }
+}
+
+Hub.listen('auth', listener);
 
 const currentPage = ref('Bingo')
+const firstName = ref('')
+const lastName = ref('')
+const nickName = ref('')
 
-const navigation = [
+const navigation = ref([
   { name: 'Bingo', href: '#', current: true },
   { name: 'Scoreboard', href: '#', current: false },
   { name: 'Profile', href: '#', current: false },
-  { name: 'Items', href: '#', current: false },
-  { name: 'NickNames', href: '#', current: false },
-]
+])
 
 function changeNav(pageName) {
-  for (let loop = 0; loop < navigation.length; loop++) {
-      if (navigation[loop].name === pageName) {
-          navigation[loop].current = true
+  for (let loop = 0; loop < navigation.value.length; loop++) {
+      if (navigation.value[loop].name === pageName) {
+          navigation.value[loop].current = true
       } else {
-          navigation[loop].current = false
+          navigation.value[loop].current = false
       }
   }
   currentPage.value = pageName
 }
 
+function goToBingoNav() {
+  changeNav('Bingo')
+}
+
+function updateNavigation(user) {
+  if (user === 'ba738cfe-65ca-4483-b9f6-391e7fd6ba2f'){
+    navigation.value.push({ name: 'Items', href: '#', current: false });
+    navigation.value.push({ name: 'NickNames', href: '#', current: false });
+  }
+}
+
+function userSignedIn(data) {
+  
+
+  getScoreAPI(data.payload.data.username).then(res => {
+    if (!res) {
+      const score = {
+        id: data.payload.data.username,
+        firstName: '',
+        nickName: '',
+        lastName: '',
+        email: data.payload.data.attributes.email,
+        score: 0,
+        bingo: false
+      }
+
+      addScoreAPI(score)
+      changeNav('Profile')
+    }
+    else {
+      if (!res.firstName) {
+        changeNav('Profile')
+      }
+      else {
+        firstName.value = res.firstName
+        lastName.value = res.lastName
+        nickName.value = res.nickName
+      }
+    }
+  })
+}
+
+function updateProfile(firstname, lastname, nickname){
+  firstName.value = firstname
+  lastName.value = lastname
+  nickName.value = nickname
+}
 </script>
 
 <template>
@@ -103,8 +177,9 @@ function changeNav(pageName) {
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
-          <Card v-show="currentPage === 'Bingo'" :username='user.username' />
-          <Profile v-show="currentPage === 'Profile'" :username='user.username' />
+          <Card v-show="currentPage === 'Bingo'" :username='user.username' @update-navigation="updateNavigation"/>
+          <Profile v-show="currentPage === 'Profile'" :username='user.username' :lastName='lastName' :firstName='firstName' :nickName='nickName' @close-profile="goToBingoNav"/>
+          <Scorecard v-show="currentPage === 'Scoreboard'"/>
           <Items v-if="currentPage === 'Items'"/>
           <NickNames v-if="currentPage === 'NickNames'"/>
           <!-- /End replace -->

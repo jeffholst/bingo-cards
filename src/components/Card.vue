@@ -1,11 +1,13 @@
 <script setup>
     import { ref } from 'vue'
-    import { getItemsAPI, addCardAPI, syncCardAPI, getCardAPI } from '../api'
+    import { getItemsAPI, addCardAPI, syncCardAPI, getCardAPI, getScoreAPI } from '../api'
     import { v4 as uuidv4 } from 'uuid';
 
     const props = defineProps({
         username: String
     })
+
+    const emit = defineEmits(['updateNavigation'])
 
     const items = ref([])
     const hasBingo = ref(false)
@@ -93,8 +95,10 @@
     }
     
     function initializePage() {
+        emit('updateNavigation', props.username)
+        
         getCardAPI(props.username).then(res => {
-            if (res.length > 0) {
+            if (res && res.length > 0) {
                 console.log("Card from database")
                 items.value = res
                 localStorage.setItem(props.username, JSON.stringify(res))
