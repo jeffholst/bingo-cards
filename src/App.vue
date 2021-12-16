@@ -43,7 +43,7 @@ const nickName = ref('')
 
 const navigation = ref([
   { name: 'Bingo', href: '#', current: true },
-  { name: 'Scoreboard', href: '#', current: false },
+  { name: 'Leaderboard', href: '#', current: false },
   { name: 'Profile', href: '#', current: false },
 ])
 
@@ -167,19 +167,12 @@ function updateProfile(firstname, lastname, nickname){
     </Disclosure>
 
     <div class="py-10">
-      <header>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 class="text-3xl font-bold leading-tight text-gray-900">
-            {{ currentPage }}
-          </h1>
-        </div>
-      </header>
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
           <Card v-show="currentPage === 'Bingo'" :username='user.username' @update-navigation="updateNavigation"/>
           <Profile v-show="currentPage === 'Profile'" :username='user.username' :lastName='lastName' :firstName='firstName' :nickName='nickName' @close-profile="goToBingoNav"/>
-          <Scorecard v-show="currentPage === 'Scoreboard'"/>
+          <Scorecard v-show="currentPage === 'Leaderboard'"/>
           <Items v-if="currentPage === 'Items'"/>
           <NickNames v-if="currentPage === 'NickNames'"/>
           <!-- /End replace -->
