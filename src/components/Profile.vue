@@ -1,14 +1,15 @@
 <script setup>
 import { ref, watchEffect } from "vue"
-import { getNickNamesAPI, syncScoreAPI } from "../api"
+import { syncScoreAPI } from "../api"
 import { v4 as uuidv4 } from "uuid"
 import { Field, Form, ErrorMessage } from "vee-validate"
 import { useUserStore } from '../stores/user'
+import { useNickNamesStore } from '../stores/nicknames'
 
 const emit = defineEmits(["closeProfile"])
 
-const items = ref([])
 const myUser = useUserStore()
+const nickNames = useNickNamesStore()
 // We have local versions of these because user may not hit Save
 const firstName = ref(myUser.firstName)
 const nickName = ref(myUser.nickName)
@@ -46,15 +47,9 @@ function getRandomInt(max) {
 }
 
 function changeNickName() {
-  nickName.value = items.value[getRandomInt(items.value.length)].text
+  nickName.value = nickNames.items[getRandomInt(nickNames.items.length)].text
 }
 
-getNickNamesAPI().then((res) => {
-  items.value = res
-  if (!nickName.value) {
-    changeNickName()
-  }
-})
 </script>
 
 <template>

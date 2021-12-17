@@ -2,6 +2,8 @@
 import { defineStore } from 'pinia'
 import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI } from "../api"
 import { v4 as uuidv4 } from "uuid"
+import { useNickNamesStore } from './nicknames'
+import * as helper from '../helper'
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -50,26 +52,7 @@ export const useUserStore = defineStore({
         return isAdministrator
     },
 
-    shuffle(array) {
-        let currentIndex = array.length,
-            randomIndex
-
-        // While there remain elements to shuffle...
-        while (currentIndex != 0) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex)
-            currentIndex--
-
-            // And swap it with the current element.
-            ;[array[currentIndex], array[randomIndex]] = [
-            array[randomIndex],
-            array[currentIndex],
-            ]
-        }
-    },
-
     insertAllItems() {
-
         for (var loop = 0; loop < this.cardItems.length; loop++) {
             const myCard = {
                 id: this.cardItems[loop].id,
@@ -87,7 +70,9 @@ export const useUserStore = defineStore({
         let isAdministrator = this.checkForAdministrator(userName)
 
         getScoreAPI(userName).then((res) => {
+            debugger
             if (res) {
+                localStorage.setItem(`${userName}-profile`, JSON.stringify(res))
                 this.$patch({
                     userName: userName,
                     firstName: res.firstName,
@@ -106,7 +91,7 @@ export const useUserStore = defineStore({
                         nickName: profile.nickName,
                         lastName: profile.lastName,
                         isAdmin: isAdministrator,
-                        email: res.email,
+                        email: profile.email,
                     })
                 }
             }
@@ -121,19 +106,19 @@ export const useUserStore = defineStore({
                     return a.sortOrder - b.sortOrder;
                 })
                 this.cardItems = res
+                this.$patch({hasBingo: helper.checkForBingo(res)})
                 localStorage.setItem(userName, JSON.stringify(res))
-                //TODO checkForBingo()
             } else {
                 const tmp = localStorage.getItem(userName)
                 if (tmp) {
                     console.log("Card from local storage")
                     this.cardItems = JSON.parse(tmp)
-                    // TODO checkForBingo()
+                    this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
                 } else {
                     // try to get from server
                     getItemsAPI().then((res) => {
                         console.log("Card created")
-                        this.shuffle(res)
+                        helper.shuffle(res)
                         res.length = 25 // only keep 25 items
                         for (var loop = 0; loop < res.length; loop++) {
                             res[loop].id = uuidv4()
@@ -145,7 +130,7 @@ export const useUserStore = defineStore({
                         localStorage.setItem(userName, JSON.stringify(res))
                         this.cardItems = res
                         this.insertAllItems()
-                        //checkForBingo()
+                        this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
                     })
                 }
             }
@@ -153,8 +138,10 @@ export const useUserStore = defineStore({
     },
     
     async login(userName, cachedCreds) {
+        const nickNames = useNickNamesStore()
         this.getUser(userName)
         this.getCard(userName)
+        nickNames.getNickNames()
       }
     },
 })

@@ -40,9 +40,7 @@ function getScores() {
 }
 
 function clickedUser(userName, fName, nName, lName) {
-  console.log(userName)
   getCardAPI(userName).then((res) => {
-    console.log(res)
     if (res && res.length > 0) {
         res.sort(function(a, b) {
             return a.sortOrder - b.sortOrder;
