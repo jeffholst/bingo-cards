@@ -36,6 +36,7 @@ export const getCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      synced
       createdAt
       updatedAt
     }
@@ -54,6 +55,7 @@ export const listCards = /* GraphQL */ `
         selected
         sortOrder
         owner
+        synced
         createdAt
         updatedAt
       }

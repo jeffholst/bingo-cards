@@ -30,8 +30,10 @@ function toggleSelect(findId) {
       bingo: myUser.hasBingo,
     }
     syncScoreAPI(score)
-    localStorage.setItem(myUser.userName, JSON.stringify(items.value))
-    syncCardAPI(findId, result.selected)
+    syncCardAPI(findId, result.selected).then((res) => {
+      result.synced = res
+      localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
+    })
   }
 }
 
@@ -63,7 +65,7 @@ function deleteCard() {
         </h1>
       </div>
     </header>
-    <div v-if="myUser.isAdmin">
+    <div v-if="myUser.isAdmin" style="padding-bottom: 20px;">
       <button
         class="
           bg-red-500
@@ -72,12 +74,22 @@ function deleteCard() {
           font-bold
           border border-red-700
           rounded
+          py-1
+          px-1
         "
         type="button"
         @click="deleteCard"
       >
         Delete User Card
       </button>
+    </div>
+    <div v-if="props.canEdit && myUser.hasBingo" class="text-3xl font-extrabold">
+      <span class="text-green-500">B</span>
+      <span class="text-red-500">I</span>
+      <span class="text-blue-500">N</span>
+      <span class="text-yellow-500">G</span>
+      <span class="text-purple-500">O</span>
+      <span class="text-blue-800">!</span>
     </div>
     <div class="grid grid-flow-col grid-cols-5 grid-rows-5">
       <button
@@ -95,7 +107,6 @@ function deleteCard() {
         {{ item.text }}
       </button>
     </div>
-    <div v-if="hasBingo">BINGO</div>
   </div>
 </template>
 

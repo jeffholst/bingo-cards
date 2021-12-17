@@ -13,6 +13,7 @@ type Card @model {
   selected: Boolean
   sortOrder: Int
   owner: String
+  synced: Boolean
 }
 
 type Score @model {

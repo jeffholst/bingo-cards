@@ -35,6 +35,7 @@ export declare class Card {
   readonly selected?: boolean;
   readonly sortOrder?: number;
   readonly owner?: string;
+  readonly synced?: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Card, CardMetaData>);

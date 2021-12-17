@@ -11,7 +11,7 @@ import NickNames from './components/NickNames.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { Hub } from 'aws-amplify';
-import { getScoreAPI, addScoreAPI } from './api'
+import { getScoreAPI, addScoreAPI, syncPendingCards } from './api'
 import { Auth } from "aws-amplify";
 import { useUserStore } from './stores/user'
 
@@ -20,6 +20,8 @@ const firstName = ref('')
 const lastName = ref('')
 const nickName = ref('')
 const myUser = useUserStore()
+
+const myTimeout = setInterval(function() {syncPendingCards(myUser.cardItems, myUser.userName)}, 5000);
 
 async function checkForCurrentlyAuthenticated() {
     try {

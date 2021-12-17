@@ -1,6 +1,6 @@
 // @ts-check
 import { defineStore } from 'pinia'
-import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI } from "../api"
+import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI, syncPendingCards } from "../api"
 import { v4 as uuidv4 } from "uuid"
 import { useNickNamesStore } from './nicknames'
 import * as helper from '../helper'
@@ -59,6 +59,7 @@ export const useUserStore = defineStore({
                 text: this.cardItems[loop].text,
                 selected: this.cardItems[loop].selected,
                 sortOrder: loop,
+                synced: this.cardItems[loop].synced,
                 owner: this.cardItems[loop].owner,
             }
 
@@ -70,7 +71,6 @@ export const useUserStore = defineStore({
         let isAdministrator = this.checkForAdministrator(userName)
 
         getScoreAPI(userName).then((res) => {
-            debugger
             if (res) {
                 localStorage.setItem(`${userName}-profile`, JSON.stringify(res))
                 this.$patch({
@@ -123,7 +123,7 @@ export const useUserStore = defineStore({
                         for (var loop = 0; loop < res.length; loop++) {
                             res[loop].id = uuidv4()
                             res[loop].selected = false
-                            res[loop].synced = false
+                            res[loop].synced = true
                             res[loop].sortOrder = loop
                             res[loop].owner = userName
                         }
@@ -139,9 +139,18 @@ export const useUserStore = defineStore({
     
     async login(userName, cachedCreds) {
         const nickNames = useNickNamesStore()
-        this.getUser(userName)
-        this.getCard(userName)
         nickNames.getNickNames()
+   
+        this.getUser(userName)
+
+        // Sync any pending cards from local storage before getting cards from database
+        const tmp = localStorage.getItem(userName)
+        if (tmp) {
+            let cards = JSON.parse(tmp)
+            await syncPendingCards(cards, userName)
+        }
+
+        this.getCard(userName) 
       }
     },
 })

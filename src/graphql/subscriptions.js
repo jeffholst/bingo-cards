@@ -39,6 +39,7 @@ export const onCreateCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      synced
       createdAt
       updatedAt
     }
@@ -52,6 +53,7 @@ export const onUpdateCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      synced
       createdAt
       updatedAt
     }
@@ -65,6 +67,7 @@ export const onDeleteCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      synced
       createdAt
       updatedAt
     }

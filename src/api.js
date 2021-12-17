@@ -33,9 +33,15 @@ const addCardAPI = async (card) => {
 }
 
 const syncCardAPI = async (id, selected) => {
+  let rval = false
   if (!debugNoNetwork) {
-    await API.graphql(graphqlOperation(updateCard, {input: {id: id, selected: selected}}))
+    try {
+      const res = await API.graphql(graphqlOperation(updateCard, {input: {id: id, selected: selected, synced: true}}))
+      rval = true
+    } catch {
+    }
   }
+  return rval
 }
 
 const getCardAPI = async (owner) => {
@@ -82,7 +88,11 @@ const addScoreAPI = async (score) => {
 
 const syncScoreAPI = async (score) => {
   if (!debugNoNetwork) {
-    await API.graphql(graphqlOperation(updateScore, {input: score}))
+    try {
+      const res = await API.graphql(graphqlOperation(updateScore, {input: score}))
+      return true
+    } catch {
+    }
   }
 }
 
@@ -100,10 +110,23 @@ const deleteCardAPI = async (itemId) => {
   }
 }
 
+const syncPendingCards = async (cardItems, userName) => {
+  for (let loop = 0; loop < cardItems.length; loop++) {
+    if (!cardItems[loop].synced) {
+      await syncCardAPI(cardItems[loop].id, cardItems[loop].selected).then((res) => {
+        if (res) {
+          console.log('Synced pending card: ' + cardItems[loop])
+          cardItems[loop].synced = true
+          localStorage.setItem(userName, JSON.stringify(cardItems))
+        }
+      })
+    }
+  }
+}
 /* update a todo */
 // await API.graphql(graphqlOperation(updateTodo, { input: { id: todoId, name: "Updated todo info" }}));
 
 export {
   getItemsAPI, addItemAPI, deleteItemAPI, addCardAPI, syncCardAPI, getCardAPI, getNickNamesAPI, addNickNameAPI, deleteNickNameAPI,
-  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI
+  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingCards
 }

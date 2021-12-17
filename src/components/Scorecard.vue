@@ -12,6 +12,7 @@ const firstName = ref("")
 const nickName = ref("")
 const lastName = ref("")
 const cardItems = ref([])
+const lastUserName = ref("")
 
 const subscription1 = API.graphql(
   graphqlOperation(subscriptions.onUpdateScore)
@@ -27,7 +28,7 @@ const subscription2 = API.graphql(
   error: (error) => console.warn(error),
 })
 
-function getScores() {
+function getScores(navToLeader) {
   getScoresAPI().then((res) => {
     // Equal to SELECT * FROM res ORDER BY bing, score, firstname
     res.sort(
@@ -35,11 +36,14 @@ function getScores() {
         b.bingo - a.bingo || b.score - a.score || ('' + a.firstName).localeCompare(b.firstName)
     )
     items.value = res
-    clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName)
+
+    if (!lastUserName.value) clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName)
+    else clickedUser(lastUserName.value, firstName.value, nickName.value, lastName.value)
   })
 }
 
 function clickedUser(userName, fName, nName, lName) {
+  lastUserName.value = userName
   getCardAPI(userName).then((res) => {
     if (res && res.length > 0) {
         res.sort(function(a, b) {
