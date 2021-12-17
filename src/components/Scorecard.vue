@@ -35,6 +35,7 @@ function getScores() {
         b.bingo - a.bingo || b.score - a.score || ('' + a.firstName).localeCompare(b.firstName)
     )
     items.value = res
+    clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName)
   })
 }
 
@@ -66,7 +67,7 @@ getScores()
       :nick-name="nickName"
       :last-name="lastName"
     />
-    <header>
+    <header style="padding-top: 20px;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold leading-tight text-gray-900">
           Leaderboard
@@ -132,7 +133,7 @@ getScores()
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in items" :key="items.id">
+                <tr v-for="(item, index) in items" :key="items.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
                   <td
                     class="
                       px-6
@@ -143,20 +144,29 @@ getScores()
                       text-gray-900 text-left
                     "
                   >
-                    <a
-                      href="#"
-                      @click="
-                        clickedUser(
+                    <button
+                        type="button"
+                        @click="clickedUser(
                           item.id,
                           item.firstName,
                           item.nickName,
                           item.lastName
-                        )
-                      "
-                    >
-                      {{ item.firstName }} '{{ item.nickName }}'
-                      {{ item.lastName }}
-                    </a>
+                        )"
+                        class="
+                            bg-transparent
+                            hover:bg-blue-500
+                            text-blue-700
+                            font-semibold
+                            hover:text-white
+                            py-1
+                            px-1
+                            border border-blue-500
+                            hover:border-transparent
+                            rounded
+                        "
+                        >
+                        {{ item.firstName }} '{{ item.nickName }}' {{ item.lastName }}
+                    </button>
                   </td>
                   <td
                     class="
@@ -176,7 +186,8 @@ getScores()
                       text-sm text-gray-500 text-center
                     "
                   >
-                    {{ item.bingo }}
+                    <div v-if="item.bingo">Yes</div>
+                    <div v-else>No</div>
                   </td>
                 </tr>
               </tbody>
