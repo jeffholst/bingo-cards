@@ -1,22 +1,22 @@
 <script setup>
-import { ref } from "vue"
-import { getNickNamesAPI, syncScoreAPI, getScoreAPI } from "../api"
+import { ref, watchEffect } from "vue"
+import { getNickNamesAPI, syncScoreAPI } from "../api"
 import { v4 as uuidv4 } from "uuid"
 import { Field, Form, ErrorMessage } from "vee-validate"
-
-const props = defineProps({
-  username: String,
-  firstName: String,
-  lastName: String,
-  nickName: String,
-})
+import { useUserStore } from '../stores/user'
 
 const emit = defineEmits(["closeProfile"])
 
 const items = ref([])
-const nickName = ref(props.nickName)
-const firstName = ref(props.firstName)
-const lastName = ref(props.lastName)
+const myUser = useUserStore()
+// We have local versions of these because user may not hit Save
+const firstName = ref(myUser.firstName)
+const nickName = ref(myUser.nickName)
+const lastName = ref(myUser.lastName)
+
+watchEffect(() => firstName.value = myUser.firstName)
+watchEffect(() => nickName.value = myUser.nickName)
+watchEffect(() => lastName.value = myUser.lastName)
 
 function isRequiredFirstName(value) {
   return value ? true : "Looks like you forgot yer first name"
@@ -28,13 +28,16 @@ function isRequiredLastName(value) {
 
 function onSubmit(values) {
   const score = {
-    id: props.username,
+    id: myUser.userName,
     firstName: firstName.value,
-    lastName: lastName.value,
     nickName: nickName.value,
+    lastName: lastName.value,
   }
   syncScoreAPI(score)
-  localStorage.setItem(`${props.username}-profile`, JSON.stringify(score))
+  localStorage.setItem(`${myUser.username}-profile`, JSON.stringify(score))
+  myUser.firstName = firstName.value
+  myUser.nickName = nickName.value
+  myUser.lastName = lastName.value
   emit("closeProfile")
 }
 
@@ -52,22 +55,6 @@ getNickNamesAPI().then((res) => {
     changeNickName()
   }
 })
-
-getScoreAPI(props.username).then((res) => {
-  if (res) {
-    firstName.value = res.firstName
-    lastName.value = res.lastName
-    nickName.value = res.nickName
-  } else {
-    const tmp = localStorage.getItem(`${props.username}-profile`)
-    if (tmp) {
-      let profile = JSON.parse(tmp)
-      firstName.value = profile.firstName
-      lastName.value = profile.lastName
-      nickName.value = profile.nickName
-    }
-  }
-})
 </script>
 
 <template>
@@ -75,6 +62,7 @@ getScoreAPI(props.username).then((res) => {
     <header>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold leading-tight text-gray-900">Profile</h1>
+        <h1>{{ myUser.email }}</h1>
       </div>
     </header>
     <Form @submit="onSubmit" class="grid grid-cols-1 gap-y-6">
@@ -162,7 +150,7 @@ getScoreAPI(props.username).then((res) => {
             rounded
           "
         >
-          Giddy Up
+          Save
         </button>
       </div>
     </Form>

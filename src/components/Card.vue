@@ -1,24 +1,26 @@
 <script setup>
 import { ref } from "vue"
 import {
-  getItemsAPI,
-  addCardAPI,
+  deleteCardAPI,
   syncCardAPI,
   getCardAPI,
   syncScoreAPI,
-  getScoreAPI
 } from "../api"
-import { v4 as uuidv4 } from "uuid"
+import { useUserStore } from "../stores/user"
 
 const props = defineProps({
-  username: String,
+  canEdit: Boolean,
+  cardItems: Array,
+  firstName: String,
+  nickName: String,
+  lastName: String,
+  userName: String,
 })
-
-const emit = defineEmits(["updateNavigation"])
 
 const items = ref([])
 const hasBingo = ref(false)
-const name = ref('')
+const name = ref("")
+const myUser = useUserStore()
 
 function checkForBingo() {
   let l1, l2, index
@@ -30,7 +32,7 @@ function checkForBingo() {
     won = true
     index = l1
     for (l2 = 0; l2 < 5; l2++) {
-      if (!items.value[index].selected) {
+      if (!props.cardItems[index].selected) {
         won = false
         break
       }
@@ -45,7 +47,7 @@ function checkForBingo() {
     won = true
     index = l1
     for (l2 = 0; l2 < 5; l2++) {
-      if (!items.value[index].selected) {
+      if (!props.cardItems[index].selected) {
         won = false
         break
       }
@@ -63,29 +65,31 @@ function checkForBingo() {
   while (!won && l1 < 2) {
     won = true
     for (index = 0; index < 5; index++) {
-      if (!items.value[ary[l1][index]].selected) {
+      if (!props.cardItems[ary[l1][index]].selected) {
         won = false
         break
       }
     }
     l1++
   }
-  hasBingo.value = won
+  myUser.hasBingo = won
 }
 
 function toggleSelect(findId) {
-  const result = items.value.find(({ id }) => id === findId)
-  result.selected = !result.selected
-  checkForBingo()
-  const matches = items.value.filter(({ selected }) => selected)
-  const score = {
-    id: props.username,
-    score: matches.length,
-    bingo: hasBingo.value,
+  if (props.canEdit) {
+    const result = props.cardItems.find(({ id }) => id === findId)
+    result.selected = !result.selected
+    checkForBingo()
+    const matches = props.cardItems.filter(({ selected }) => selected)
+    const score = {
+      id: myUser.userName,
+      score: matches.length,
+      bingo: myUser.hasBingo,
+    }
+    syncScoreAPI(score)
+    localStorage.setItem(myUser.userName, JSON.stringify(items.value))
+    syncCardAPI(findId, result.selected)
   }
-  syncScoreAPI(score)
-  localStorage.setItem(props.username, JSON.stringify(items.value))
-  syncCardAPI(findId, result.selected)
 }
 
 function shuffle(array) {
@@ -109,16 +113,15 @@ function shuffle(array) {
 }
 
 function initializePage() {
-  emit("updateNavigation", props.username)
-
-  getCardAPI(props.username).then((res) => {
+  /*
+  getCardAPI(myUser.userName).then((res) => {
     if (res && res.length > 0) {
       console.log("Card from database")
       items.value = res
-      localStorage.setItem(props.username, JSON.stringify(res))
+      localStorage.setItem(myUser.userName, JSON.stringify(res))
       checkForBingo()
     } else {
-      const tmp = localStorage.getItem(props.username)
+      const tmp = localStorage.getItem(myUser.userName)
       if (tmp) {
         console.log("Card from local storage")
         items.value = JSON.parse(tmp)
@@ -134,9 +137,9 @@ function initializePage() {
             res[loop].selected = false
             res[loop].synced = false
             res[loop].sortOrder = loop
-            res[loop].owner = props.username
+            res[loop].owner = myUser.userName
           }
-          localStorage.setItem(props.username, JSON.stringify(res))
+          localStorage.setItem(myUser.userName, JSON.stringify(res))
           items.value = res
           insertAllItems()
           checkForBingo()
@@ -144,21 +147,29 @@ function initializePage() {
       }
     }
   })
-
-  getScoreAPI(props.username).then((res) => {
-    if (res) {
-      name.value = `${res.firstName} '${res.nickName}' ${res.lastName}`
-    } else {
-      const tmp = localStorage.getItem(`${props.username}-profile`)
-      if (tmp) {
-        let profile = JSON.parse(tmp)
-        name.value = `${profile.firstName} '${profile.nickName}' ${profile.lastName}`
-      }
-    }
-  })
+  */
 }
 
+function deleteCard() {
+    console.log("Delete card")
+    const score = {
+        id: props.userName,
+        score: 0,
+        bingo: false,
+    }
+    syncScoreAPI(score)
+    getCardAPI(props.userName).then((res) => {
+      if (res && res.length > 0) {
+        for (var loop = 0; loop < res.length; loop++) {
+            deleteCardAPI(res[loop].id)
+        }
+       
+      }
+    })
+  }
+
 function insertAllItems() {
+  /*
   for (var loop = 0; loop < items.value.length; loop++) {
     const myCard = {
       id: items.value[loop].id,
@@ -170,6 +181,7 @@ function insertAllItems() {
 
     addCardAPI(myCard)
   }
+  */
 }
 
 initializePage()
@@ -179,12 +191,32 @@ initializePage()
   <div>
     <header>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ name }}</h1>
+        <h1 class="text-3xl font-bold leading-tight text-gray-900">
+          {{ props.firstName }} '{{ props.nickName }}' {{ props.lastName }}
+        </h1>
       </div>
     </header>
+    <div v-if="myUser.isAdmin">
+      <button
+        class="
+          bg-blue-500
+          hover:bg-blue-700
+          text-white
+          font-bold
+          py-2
+          px-4
+          border border-blue-700
+          rounded
+        "
+        type="button"
+        @click="deleteCard"
+      >
+        Delete User Card
+      </button>
+    </div>
     <div class="grid grid-flow-col grid-cols-5 grid-rows-5">
       <button
-        v-for="item in items"
+        v-for="item in props.cardItems"
         :key="item.id"
         class="border"
         v-bind:class="[

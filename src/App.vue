@@ -3,7 +3,7 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 // import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue'
-import Card from './components/Card.vue'
+import Bingo from './components/Bingo.vue'
 import Scorecard from './components/Scorecard.vue'
 import Items from './components/Items.vue'
 import Profile from './components/Profile.vue'
@@ -12,9 +12,27 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import { Hub } from 'aws-amplify';
 import { getScoreAPI, addScoreAPI } from './api'
+import { Auth } from "aws-amplify";
+import { useUserStore } from './stores/user'
+
+const currentPage = ref('Bingo')
+const firstName = ref('')
+const lastName = ref('')
+const nickName = ref('')
+const myUser = useUserStore()
+
+async function checkForCurrentlyAuthenticated() {
+    try {
+        const authUser = await Auth.currentAuthenticatedUser();
+        myUser.login(authUser.username, true)
+    } catch {
+    }
+}
+
+// Only true when localStorage auth is still valid
+checkForCurrentlyAuthenticated()
 
 const listener = (data) => {
-  console.log('Got here')
   switch (data.payload.event) {
     case 'signIn':
       userSignedIn(data)
@@ -36,23 +54,12 @@ const listener = (data) => {
 
 Hub.listen('auth', listener);
 
-const currentPage = ref('Bingo')
-const firstName = ref('')
-const lastName = ref('')
-const nickName = ref('')
-
-const navigation = ref([
-  { name: 'Bingo', href: '#', current: true },
-  { name: 'Leaderboard', href: '#', current: false },
-  { name: 'Profile', href: '#', current: false },
-])
-
 function changeNav(pageName) {
-  for (let loop = 0; loop < navigation.value.length; loop++) {
-      if (navigation.value[loop].name === pageName) {
-          navigation.value[loop].current = true
+  for (let loop = 0; loop < myUser.navigation.length; loop++) {
+      if (myUser.navigation[loop].name === pageName) {
+          myUser.navigation[loop].current = true
       } else {
-          navigation.value[loop].current = false
+          myUser.navigation[loop].current = false
       }
   }
   currentPage.value = pageName
@@ -62,17 +69,11 @@ function goToBingoNav() {
   changeNav('Bingo')
 }
 
-function updateNavigation(user) {
-  if (user === 'ba738cfe-65ca-4483-b9f6-391e7fd6ba2f'){
-    navigation.value.push({ name: 'Items', href: '#', current: false });
-    navigation.value.push({ name: 'NickNames', href: '#', current: false });
-  }
-}
-
 function userSignedIn(data) {
-  
+  myUser.login(data.payload.data.username, false)
 
   getScoreAPI(data.payload.data.username).then(res => {
+    // If user is not in database then let's add them
     if (!res) {
       const score = {
         id: data.payload.data.username,
@@ -100,11 +101,6 @@ function userSignedIn(data) {
   })
 }
 
-function updateProfile(firstname, lastname, nickname){
-  firstName.value = firstname
-  lastName.value = lastname
-  nickName.value = nickname
-}
 </script>
 
 <template>
@@ -122,7 +118,7 @@ function updateProfile(firstname, lastname, nickname){
               <h2 style="padding-left: 20px">Hidden Creek Ranch</h2>
             </div>
             <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-              <a v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium']" :aria-current="item.current ? 'page' : undefined" @click="changeNav(item.name)">
+              <a v-for="item in myUser.navigation" :key="item.name" :href="item.href" :class="[item.current ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium']" :aria-current="item.current ? 'page' : undefined" @click="changeNav(item.name)">
                 {{ item.name }}
               </a>
             </div>
@@ -152,7 +148,7 @@ function updateProfile(firstname, lastname, nickname){
 
       <DisclosurePanel class="sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-          <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800', 'block pl-3 pr-4 py-2 border-l-4 text-base font-medium']" :aria-current="item.current ? 'page' : undefined" @click="changeNav(item.name)">
+          <DisclosureButton v-for="item in myUser.navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800', 'block pl-3 pr-4 py-2 border-l-4 text-base font-medium']" :aria-current="item.current ? 'page' : undefined" @click="changeNav(item.name)">
             {{ item.name }}
           </DisclosureButton>
         </div>
@@ -170,8 +166,8 @@ function updateProfile(firstname, lastname, nickname){
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
-          <Card v-show="currentPage === 'Bingo'" :username='user.username' @update-navigation="updateNavigation"/>
-          <Profile v-show="currentPage === 'Profile'" :username='user.username' :lastName='lastName' :firstName='firstName' :nickName='nickName' @close-profile="goToBingoNav"/>
+          <Bingo v-show="currentPage === 'Bingo'"/>
+          <Profile v-show="currentPage === 'Profile'" @close-profile="goToBingoNav"/>
           <Scorecard v-show="currentPage === 'Leaderboard'"/>
           <Items v-if="currentPage === 'Items'"/>
           <NickNames v-if="currentPage === 'NickNames'"/>

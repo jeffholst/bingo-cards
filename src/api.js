@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { API, graphqlOperation} from 'aws-amplify'
 //import { Item } from './models'
 import { listItems, listCards, listNickNames, getScore, listScores } from './graphql/queries';
-import { createItem, deleteItem, createCard, updateCard, createNickName, deleteNickName, createScore, updateScore } from './graphql/mutations'
+import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickName, deleteNickName, createScore, updateScore } from './graphql/mutations'
 
 const debugNoNetwork = false; // true will simulate network error
 
@@ -94,10 +94,16 @@ const getScoresAPI = async () => {
   else return null
 }
 
+const deleteCardAPI = async (itemId) => {
+  if (!debugNoNetwork) {
+    await API.graphql(graphqlOperation(deleteCard, {input: {id: itemId}}))
+  }
+}
+
 /* update a todo */
 // await API.graphql(graphqlOperation(updateTodo, { input: { id: todoId, name: "Updated todo info" }}));
 
 export {
   getItemsAPI, addItemAPI, deleteItemAPI, addCardAPI, syncCardAPI, getCardAPI, getNickNamesAPI, addNickNameAPI, deleteNickNameAPI,
-  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI
+  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI
 }
