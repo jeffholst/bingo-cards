@@ -2,7 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { API, graphqlOperation} from 'aws-amplify'
 //import { Item } from './models'
 import { listItems, listCards, listNickNames, getScore, listScores } from './graphql/queries';
-import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickName, deleteNickName, createScore, updateScore } from './graphql/mutations'
+import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickName, deleteNickName, createScore, updateScore, deleteScore } from './graphql/mutations'
+import * as helper from "./helper"
 
 const debugNoNetwork = false; // true will simulate network error
 
@@ -46,8 +47,12 @@ const syncCardAPI = async (id, selected) => {
 
 const getCardAPI = async (owner) => {
   if (!debugNoNetwork) {
-    const result = await API.graphql(graphqlOperation(listCards, {filter: {owner: {eq: owner}}}))
-    return result.data.listCards.items
+    try {
+      const result = await API.graphql(graphqlOperation(listCards, {filter: {owner: {eq: owner}}}))
+      return result.data.listCards.items
+    } catch {
+      return null
+    }
   }
   else return null
 }
@@ -111,8 +116,10 @@ const deleteCardAPI = async (itemId) => {
 }
 
 const syncPendingCards = async (cardItems, userName) => {
+  let hadSync = false
   for (let loop = 0; loop < cardItems.length; loop++) {
     if (!cardItems[loop].synced) {
+      hadSync = true
       await syncCardAPI(cardItems[loop].id, cardItems[loop].selected).then((res) => {
         if (res) {
           console.log('Synced pending card: ' + cardItems[loop])
@@ -122,11 +129,19 @@ const syncPendingCards = async (cardItems, userName) => {
       })
     }
   }
+  if (hadSync){
+    helper.reScore(userName, cardItems)
+  }
 }
-/* update a todo */
-// await API.graphql(graphqlOperation(updateTodo, { input: { id: todoId, name: "Updated todo info" }}));
+
+const deleteScoreAPI = async (scoreId) => {
+  if (!debugNoNetwork) {
+    console.log(scoreId)
+    await API.graphql(graphqlOperation(deleteScore, {input: {id: scoreId}}))
+  }
+}
 
 export {
   getItemsAPI, addItemAPI, deleteItemAPI, addCardAPI, syncCardAPI, getCardAPI, getNickNamesAPI, addNickNameAPI, deleteNickNameAPI,
-  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingCards
+  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingCards, deleteScoreAPI
 }

@@ -1,3 +1,5 @@
+import { syncScoreAPI } from "./api"
+
 function checkForBingo(cardItems) {
   let l1, l2, index
   let won = false
@@ -52,6 +54,17 @@ function checkForBingo(cardItems) {
   return won
 }
 
+function reScore(userName, cardItems, hasBingo) {
+  if (!hasBingo) hasBingo = checkForBingo(cardItems)
+  const matches = cardItems.filter(({ selected }) => selected)
+    const score = {
+      id: userName,
+      score: matches.length,
+      bingo: hasBingo,
+    }
+    syncScoreAPI(score)
+}
+
 function shuffle(array) {
     let currentIndex = array.length,
         randomIndex
@@ -71,5 +84,5 @@ function shuffle(array) {
 }
 
 export {
-  checkForBingo, shuffle
+  checkForBingo, shuffle, reScore
 }

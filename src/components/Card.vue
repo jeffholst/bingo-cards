@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { deleteCardAPI, syncCardAPI, getCardAPI, syncScoreAPI } from "../api"
+import { deleteCardAPI, syncCardAPI, getCardAPI, deleteScoreAPI } from "../api"
 import { useUserStore } from "../stores/user"
 import * as helper from "../helper"
 
@@ -23,13 +23,7 @@ function toggleSelect(findId) {
     const result = props.cardItems.find(({ id }) => id === findId)
     result.selected = !result.selected
     myUser.hasBingo = helper.checkForBingo(props.cardItems)
-    const matches = props.cardItems.filter(({ selected }) => selected)
-    const score = {
-      id: myUser.userName,
-      score: matches.length,
-      bingo: myUser.hasBingo,
-    }
-    syncScoreAPI(score)
+    helper.reScore(myUser.userName, props.cardItems, myUser.hasBingo)
     syncCardAPI(findId, result.selected).then((res) => {
       result.synced = res
       localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
@@ -37,8 +31,11 @@ function toggleSelect(findId) {
   }
 }
 
+function deleteUser() {
+  deleteScoreAPI(props.userName)
+}
+
 function deleteCard() {
-  console.log("Delete card")
   const score = {
     id: props.userName,
     score: 0,
@@ -81,6 +78,23 @@ function deleteCard() {
         @click="deleteCard"
       >
         Delete User Card
+      </button>
+      <button
+        style="margin-left: 40px;"
+        class="
+          bg-red-500
+          hover:bg-red-700
+          text-white
+          font-bold
+          border border-red-700
+          rounded
+          py-1
+          px-1
+        "
+        type="button"
+        @click="deleteUser"
+      >
+        Delete User
       </button>
     </div>
     <div v-if="props.canEdit && myUser.hasBingo" class="text-3xl font-extrabold">

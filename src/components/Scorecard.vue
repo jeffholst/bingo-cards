@@ -45,7 +45,7 @@ function getScores(navToLeader) {
 function clickedUser(userName, fName, nName, lName) {
   lastUserName.value = userName
   getCardAPI(userName).then((res) => {
-    if (res && res.length > 0) {
+    if (res) {
         res.sort(function(a, b) {
             return a.sortOrder - b.sortOrder;
         })
@@ -68,6 +68,7 @@ getScores()
       :first-name="firstName"
       :nick-name="nickName"
       :last-name="lastName"
+      :user-name="lastUserName"
     />
     <header style="padding-top: 20px;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
