@@ -20,11 +20,11 @@ watchEffect(() => nickName.value = myUser.nickName)
 watchEffect(() => lastName.value = myUser.lastName)
 
 function isRequiredFirstName(value) {
-  return value ? true : "Looks like you forgot yer first name"
+  return value ? true : "Required"
 }
 
 function isRequiredLastName(value) {
-  return value ? true : "Looks like you forgot yer last name"
+  return value ? true : "Required"
 }
 
 function onSubmit(values) {
@@ -60,14 +60,14 @@ function changeNickName() {
         <h1>{{ myUser.email }}</h1>
       </div>
     </header>
-    <Form @submit="onSubmit" class="grid grid-cols-1 gap-y-6">
-      <p class="text-left">
+    <Form @submit="onSubmit" class="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-8">
+      <div class="text-left mt-1">
         <Field
           v-model="firstName"
           name="first-name"
-          type="name"
+          type="text"
           :rules="isRequiredFirstName"
-          placeholder="What's yer first name partner?"
+          placeholder="First Name"
           class="
             block
             w-full
@@ -78,6 +78,7 @@ function changeNickName() {
             focus:ring-indigo-500 focus:border-indigo-500
             border-gray-300
             rounded-md
+            border-2
           "
         />
         <ErrorMessage
@@ -85,9 +86,8 @@ function changeNickName() {
           class="text-red-500"
           style="padding-left: 18px"
         />
-      </p>
-      <div class="text-lg">YER COWBOY/COWGIRL NICKNAME</div>
-      <div>
+      </div>
+      <div class="mt-1">
         <button
           type="button"
           @click="changeNickName"
@@ -107,13 +107,13 @@ function changeNickName() {
           '{{ nickName }}'
         </button>
       </div>
-      <p class="text-left">
+      <div class="text-left mt-1">
         <Field
           v-model="lastName"
           name="last-name"
           type="name"
           :rules="isRequiredLastName"
-          placeholder="What's yer last name partner?"
+          placeholder="Last Name"
           class="
             block
             w-full
@@ -124,6 +124,7 @@ function changeNickName() {
             focus:ring-indigo-500 focus:border-indigo-500
             border-gray-300
             rounded-md
+            border-2
           "
         />
         <ErrorMessage
@@ -131,7 +132,7 @@ function changeNickName() {
           class="text-red-500"
           style="padding-left: 18px"
         />
-      </p>
+      </div>
       <div>
         <button
           class="
