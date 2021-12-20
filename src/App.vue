@@ -133,7 +133,7 @@ function userSignedIn(data) {
               <div>
                 <MenuButton class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span class="sr-only">Open user menu</span>
-                  <div class="w-10 h-10 rounded-full inline-flex items-center justify-center bg-white text-gray-700 font-bold">
+                  <div class="w-10 h-10 rounded-full inline-flex items-center justify-center bg-gray-200 text-gray-700 font-bold">
                     {{ initials}}
                   </div>
                 </MenuButton>
