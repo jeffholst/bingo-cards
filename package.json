@@ -22,6 +22,7 @@
     "postcss": "^8.4.4",
     "tailwindcss": "^2.2.19",
     "vite": "^2.6.4",
-    "vite-plugin-pwa": "^0.11.12"
+    "vite-plugin-pwa": "^0.11.12",
+    "workbox-precaching": "^6.4.2"
   }
 }
