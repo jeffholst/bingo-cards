@@ -79,6 +79,10 @@ function changeNav(pageName) {
   if (pageName != "Profile") syncPendingScores(myUser.userName)
 }
 
+function goToBingoNav() {
+  changeNav('My Card')
+}
+
 async function userSignedIn(data) {
   await myUser.login(data.payload.data.username, false)
 
@@ -199,7 +203,7 @@ async function userSignedIn(data) {
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
           <Bingo v-show="currentPage === 'My Card'"/>
-          <Profile v-show="currentPage === 'Profile'"/>
+          <Profile v-show="currentPage === 'Profile'" @close-profile="goToBingoNav"/>
           <Scorecard v-show="currentPage === 'Leaderboard'"/>
           <Items v-if="currentPage === 'Items'"/>
           <NickNames v-if="currentPage === 'NickNames'"/>
