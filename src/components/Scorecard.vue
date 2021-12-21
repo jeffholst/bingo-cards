@@ -15,7 +15,6 @@ const lastName = ref("")
 const cardItems = ref([])
 const lastUserName = ref("")
 const status = useStatusStore()
-const loadingCard = ref(true)
 
 const subscription1 = API.graphql(
   graphqlOperation(subscriptions.onUpdateScore)
@@ -44,22 +43,22 @@ function getScores(navToLeader) {
 
     if (!lastUserName.value) {
       clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName)
-      loadingCard.value = false
     }
-    else
+    else {
+      let index = res.findIndex(x => x.id === lastUserName.value)
       clickedUser(
-        lastUserName.value,
-        firstName.value,
-        nickName.value,
-        lastName.value
+        res[index].id,
+        res[index].firstName,
+        res[index].nickName,
+        res[index].lastName
       )
+    }
   })
 }
 
 function clickedUser(userName, fName, nName, lName) {
   console.log(userName, fName, nName, lName)
   lastUserName.value = userName
-  loadingCard.value = true
   getCardAPI(userName).then((res) => {
     if (res) {
       res.sort(function (a, b) {
@@ -69,7 +68,6 @@ function clickedUser(userName, fName, nName, lName) {
       nickName.value = nName
       lastName.value = lName
       cardItems.value = res
-      loadingCard.value = false
     }
   })
 }
@@ -80,10 +78,7 @@ getScores()
 <template>
   <div>
     <div v-if="status.online">
-      <div v-if="loadingCard">
-        LOADING
-      </div>
-      <Card v-else
+      <Card
         :can-edit="false"
         :card-items="cardItems"
         :first-name="firstName"
