@@ -181,6 +181,7 @@ async function userSignedIn(data) {
         </div>
          <div class="pt-4 pb-3 border-t border-gray-200">
           <div class="mt-3 space-y-1">
+             <h1 class="text-gray-300">{{ myUser.email}}</h1>
             <h1 class="text-gray-300">Version: {{ version }}</h1>
             <h1 v-if="status.online" class="text-gray-300">Online</h1>
             <h1 v-else class="text-gray-300">Offline</h1>
