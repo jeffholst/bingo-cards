@@ -16,6 +16,7 @@ import { Auth } from "aws-amplify";
 import { useUserStore } from './stores/user'
 import { useNickNamesStore } from "./stores/nicknames"
 import { useStatusStore } from "./stores/status"
+import * as helper from "./helper"
 
 const version = import.meta.env.VITE_APP_VERSION
 const currentPage = ref('My Card')
@@ -67,6 +68,12 @@ const listener = (data) => {
 Hub.listen('auth', listener);
 
 function changeNav(pageName) {
+
+  if (currentPage.value === "Profile" && myUser.needsSync) {
+    helper.updateProfile()
+    myUser.needsSync = false
+  }
+
   for (let loop = 0; loop < myUser.navigation.length; loop++) {
       if (myUser.navigation[loop].name === pageName) {
           myUser.navigation[loop].current = true

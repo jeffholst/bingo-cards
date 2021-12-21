@@ -21,6 +21,7 @@ export const useUserStore = defineStore({
         ],
     cardItems: [],
     hasBingo: false,
+    needsSync: false,
   }),
 
   actions: {
@@ -35,6 +36,7 @@ export const useUserStore = defineStore({
         navigation: [],
         cardItems: [],
         hasBingo: false,
+        needsSync: false,
       })
 
       // we could do other stuff like redirecting the user

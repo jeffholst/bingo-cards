@@ -1,4 +1,5 @@
 import { syncScoreAPI } from "./api"
+import { useUserStore } from "./stores/user"
 
 function checkForBingo(cardItems) {
   let l1, l2, index
@@ -83,6 +84,31 @@ function shuffle(array) {
     }
 }
 
+
+function updateProfile() {
+  const myUser = useUserStore()
+  
+  const tmp = localStorage.getItem(`${myUser.userName}-profile`)
+
+  if (tmp) {
+    let json = JSON.parse(tmp)
+    json.firstName = myUser.firstName
+    json.nickName = myUser.nickName
+    json.lastName = myUser.lastName
+    json.synced = false
+    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(json))
+  } else {
+    const score = {
+      id: myUser.userName,
+      firstName: myUser.firstName,
+      nickName: myUser.nickName,
+      lastName: myUser.lastName,
+      synced: false,
+    }
+    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(score))
+  }
+}
+
 export {
-  checkForBingo, shuffle, reScore
+  checkForBingo, shuffle, reScore, updateProfile
 }

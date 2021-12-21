@@ -19,18 +19,18 @@ const status = useStatusStore()
 const subscription1 = API.graphql(
   graphqlOperation(subscriptions.onUpdateScore)
 ).subscribe({
-  next: ({ provider, value }) => getScores(),
+  next: ({ provider, value }) => getScores(false),
   error: (error) => console.warn(error),
 })
 
 const subscription2 = API.graphql(
   graphqlOperation(subscriptions.onCreateScore)
 ).subscribe({
-  next: ({ provider, value }) => getScores(),
+  next: ({ provider, value }) => getScores(false),
   error: (error) => console.warn(error),
 })
 
-function getScores(navToLeader) {
+function getScores(showLoading) {
   getScoresAPI().then((res) => {
     // Equal to SELECT * FROM res ORDER BY bing, score, firstname
     res.sort(
@@ -42,7 +42,7 @@ function getScores(navToLeader) {
     items.value = res
 
     if (!lastUserName.value) {
-      clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName)
+      clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName, true)
     }
     else {
       let index = res.findIndex(x => x.id === lastUserName.value)
@@ -50,15 +50,17 @@ function getScores(navToLeader) {
         res[index].id,
         res[index].firstName,
         res[index].nickName,
-        res[index].lastName
+        res[index].lastName,
+        showLoading,
       )
     }
   })
 }
 
-function clickedUser(userName, fName, nName, lName) {
+function clickedUser(userName, fName, nName, lName, showLoading) {
   console.log(userName, fName, nName, lName)
   lastUserName.value = userName
+  if (showLoading) cardItems.value = null
   //getCardAPI(userName).then((res) => {
   getCardByOwnerAPI(userName).then((res) => {
     if (res) {
@@ -73,7 +75,7 @@ function clickedUser(userName, fName, nName, lName) {
   })
 }
 
-getScores()
+getScores(true)
 </script>
 
 <template>
@@ -177,7 +179,8 @@ getScores()
                             item.id,
                             item.firstName,
                             item.nickName,
-                            item.lastName
+                            item.lastName,
+                            true
                           )
                         "
                         class="

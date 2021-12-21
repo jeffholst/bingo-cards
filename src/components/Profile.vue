@@ -1,7 +1,5 @@
 <script setup>
 import { ref, watch } from "vue"
-import { syncScoreAPI } from "../api"
-import { v4 as uuidv4 } from "uuid"
 import { Field, Form, ErrorMessage } from "vee-validate"
 import { useUserStore } from "../stores/user"
 import { useNickNamesStore } from "../stores/nicknames"
@@ -9,7 +7,7 @@ import {
   ArrowCircleLeftIcon,
   ArrowCircleRightIcon,
 } from "@heroicons/vue/outline"
-import { parse } from "postcss"
+import * as helper from "../helper"
 
 const myUser = useUserStore()
 const nickNames = useNickNamesStore()
@@ -30,36 +28,16 @@ function isRequiredLastName(value) {
 }
 
 function changeNickName(change) {
-  if (change != 0) {
-    nickNameIndex.value += change
+  nickNameIndex.value += change
 
-    if (nickNameIndex.value < 0)
-      nickNameIndex.value = nickNames.items.length - 1
-    else if (nickNameIndex.value > nickNames.items.length - 1)
-      nickNameIndex.value = 0
+  if (nickNameIndex.value < 0)
+    nickNameIndex.value = nickNames.items.length - 1
+  else if (nickNameIndex.value > nickNames.items.length - 1)
+    nickNameIndex.value = 0
 
-    myUser.nickName = nickNames.items[nickNameIndex.value].text
-  }
+  myUser.nickName = nickNames.items[nickNameIndex.value].text
 
-  const tmp = localStorage.getItem(`${myUser.userName}-profile`)
-
-  if (tmp) {
-    let json = JSON.parse(tmp)
-    json.firstName = myUser.firstName
-    json.nickName = myUser.nickName
-    json.lastName = myUser.lastName
-    json.synced = false
-    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(json))
-  } else {
-    const score = {
-      id: myUser.userName,
-      firstName: myUser.firstName,
-      nickName: myUser.nickName,
-      lastName: myUser.lastName,
-      synced: false,
-    }
-    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(score))
-  }
+  myUser.needsSync = true
 }
 
 function playBingo() {
@@ -96,7 +74,7 @@ function playBingo() {
     <Form class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
       <div class="text-left mt-1">
         <Field
-          @blur="changeNickName(0)"
+          @blur="myUser.needsSync = true"
           v-model="myUser.firstName"
           name="first-name"
           type="text"
@@ -124,7 +102,7 @@ function playBingo() {
 
       <div class="text-left mt-1">
         <Field
-          @blur="changeNickName(0)"
+          @blur="myUser.needsSync = true"
           v-model="myUser.lastName"
           name="last-name"
           type="text"
