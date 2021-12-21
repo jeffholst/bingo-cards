@@ -6,7 +6,9 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [vue(),
     VitePWA({
-      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],  
+      registerType: 'autoUpdate',
+      injectionRegister: 'inline',
+      includeAssets: ['robots.txt', '*.svg', '*.png'],  
       manifest: {
         name: 'Hidden Creek Ranch Bingo',
         short_name: 'HCR Bingo',

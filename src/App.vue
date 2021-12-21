@@ -18,14 +18,6 @@ import { useNickNamesStore } from "./stores/nicknames"
 import { useStatusStore } from "./stores/status"
 import * as helper from "./helper"
 import { useRegisterSW } from 'virtual:pwa-register/vue'
-import {precacheAndRoute} from 'workbox-precaching';
-
-precacheAndRoute([
-  {url: '/assets/index.6afc1132.css', revision: null },
-  {url: '/assets/HCR-SM.81473c06.png', revision: null },
-  {url: '/assets/index.70e11811.js', revision: null },
-  {url: '/assets/vendor.b562db90.js', revision: null },
-]);
 
 const {
   offlineReady,
