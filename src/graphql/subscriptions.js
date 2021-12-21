@@ -84,6 +84,7 @@ export const onCreateScore = /* GraphQL */ `
       owner
       score
       bingo
+      synced
       createdAt
       updatedAt
     }
@@ -100,6 +101,7 @@ export const onUpdateScore = /* GraphQL */ `
       owner
       score
       bingo
+      synced
       createdAt
       updatedAt
     }
@@ -116,6 +118,7 @@ export const onDeleteScore = /* GraphQL */ `
       owner
       score
       bingo
+      synced
       createdAt
       updatedAt
     }

@@ -9,7 +9,7 @@ const debugNoNetwork = false; // true will simulate network error
 
 const getItemsAPI = async () => {
   if (!debugNoNetwork) {
-    const result = await API.graphql(graphqlOperation(listItems))
+    const result = await API.graphql(graphqlOperation(listItems, {limit: 1000}))
     return result.data.listItems.items
   }
   else return null
@@ -48,9 +48,10 @@ const syncCardAPI = async (id, selected) => {
 const getCardAPI = async (owner) => {
   if (!debugNoNetwork) {
     try {
-      const result = await API.graphql(graphqlOperation(listCards, {filter: {owner: {eq: owner}}}))
+      const result = await API.graphql(graphqlOperation(listCards, {filter: {owner: {eq: owner}}, limit: 1000}))
       return result.data.listCards.items
-    } catch {
+    } catch(error) {
+      console.log(error)
       return null
     }
   }
@@ -59,8 +60,15 @@ const getCardAPI = async (owner) => {
 
 const getNickNamesAPI = async () => {
   if (!debugNoNetwork) {
-    const result = await API.graphql(graphqlOperation(listNickNames))
-    return result.data.listNickNames.items
+    try {
+      const result = await API.graphql(graphqlOperation(listNickNames, {limit: 1000}))
+      helper.shuffle(result.data.listNickNames.items)
+      return result.data.listNickNames.items
+    }
+    catch(error) {
+      console.log(error)
+      return null
+    }
   }
   else return null
 }
@@ -92,18 +100,21 @@ const addScoreAPI = async (score) => {
 }
 
 const syncScoreAPI = async (score) => {
+  let rval = false
   if (!debugNoNetwork) {
     try {
+      score.synced = true
       const res = await API.graphql(graphqlOperation(updateScore, {input: score}))
-      return true
+      rval = true
     } catch {
     }
   }
+  return rval
 }
 
 const getScoresAPI = async () => {
   if (!debugNoNetwork) {
-    const result = await API.graphql(graphqlOperation(listScores))
+    const result = await API.graphql(graphqlOperation(listScores, {limit: 1000}))
     return result.data.listScores.items
   }
   else return null
@@ -115,7 +126,7 @@ const deleteCardAPI = async (itemId) => {
   }
 }
 
-const syncPendingCards = async (cardItems, userName) => {
+const syncPendingItems = async (cardItems, userName) => {
   let hadSync = false
   for (let loop = 0; loop < cardItems.length; loop++) {
     if (!cardItems[loop].synced) {
@@ -132,6 +143,30 @@ const syncPendingCards = async (cardItems, userName) => {
   if (hadSync){
     helper.reScore(userName, cardItems)
   }
+
+  syncPendingScores(userName)
+}
+
+const syncPendingScores = async (userName) => {
+  const tmp = localStorage.getItem(`${userName}-profile`)
+  if (tmp) {
+     let json = JSON.parse(tmp)
+     if (!json.synced) {
+       const newScore = {
+         id: json.id,
+         firstName: json.firstName,
+         nickName: json.nickName,
+         lastName: json.lastName,
+       }
+       await syncScoreAPI(newScore).then((res) => {
+         if (res) {
+          json.synced = true
+          localStorage.setItem(`${userName}-profile`, JSON.stringify(json))
+          console.log(newScore)
+         }
+       })
+     }
+  }
 }
 
 const deleteScoreAPI = async (scoreId) => {
@@ -143,5 +178,5 @@ const deleteScoreAPI = async (scoreId) => {
 
 export {
   getItemsAPI, addItemAPI, deleteItemAPI, addCardAPI, syncCardAPI, getCardAPI, getNickNamesAPI, addNickNameAPI, deleteNickNameAPI,
-  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingCards, deleteScoreAPI
+  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingItems, deleteScoreAPI, syncPendingScores
 }

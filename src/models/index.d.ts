@@ -51,6 +51,7 @@ export declare class Score {
   readonly owner?: string;
   readonly score?: number;
   readonly bingo?: boolean;
+  readonly synced?: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Score, ScoreMetaData>);

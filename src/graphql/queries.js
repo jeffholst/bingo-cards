@@ -74,6 +74,7 @@ export const getScore = /* GraphQL */ `
       owner
       score
       bingo
+      synced
       createdAt
       updatedAt
     }
@@ -95,6 +96,7 @@ export const listScores = /* GraphQL */ `
         owner
         score
         bingo
+        synced
         createdAt
         updatedAt
       }

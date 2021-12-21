@@ -1,6 +1,6 @@
 // @ts-check
 import { defineStore } from 'pinia'
-import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI, syncPendingCards } from "../api"
+import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI, syncPendingItems, syncPendingScores } from "../api"
 import { v4 as uuidv4 } from "uuid"
 import { useNickNamesStore } from './nicknames'
 import * as helper from '../helper'
@@ -15,7 +15,7 @@ export const useUserStore = defineStore({
     isAdmin: false,
     email: '',
     navigation: [
-        { name: 'Bingo', href: '#', current: true },
+        { name: 'My Card', href: '#', current: true },
         { name: 'Leaderboard', href: '#', current: false },
         { name: 'Profile', href: '#', current: false },
         ],
@@ -67,8 +67,10 @@ export const useUserStore = defineStore({
         }
     },
 
-    getUser(userName) {
+    async getUser(userName) {
         let isAdministrator = this.checkForAdministrator(userName)
+
+        await syncPendingScores(userName)
 
         getScoreAPI(userName).then((res) => {
             if (res) {
@@ -93,7 +95,7 @@ export const useUserStore = defineStore({
                         isAdmin: isAdministrator,
                         email: profile.email,
                     })
-                }
+                } 
             }
         })
     },
@@ -140,14 +142,14 @@ export const useUserStore = defineStore({
     async login(userName, cachedCreds) {
         const nickNames = useNickNamesStore()
         nickNames.getNickNames()
-   
+
         this.getUser(userName)
 
         // Sync any pending cards from local storage before getting cards from database
         const tmp = localStorage.getItem(userName)
         if (tmp) {
             let cards = JSON.parse(tmp)
-            await syncPendingCards(cards, userName)
+            await syncPendingItems(cards, userName)
         }
 
         this.getCard(userName) 

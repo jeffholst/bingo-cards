@@ -25,6 +25,7 @@ type Score @model {
   owner: String
   score: Int
   bingo: Boolean
+  synced: Boolean
 }
 
 type NickName @model {

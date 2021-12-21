@@ -1,23 +1,22 @@
 <script setup>
-import { ref, watchEffect } from "vue"
+import { ref, watch } from "vue"
 import { syncScoreAPI } from "../api"
 import { v4 as uuidv4 } from "uuid"
 import { Field, Form, ErrorMessage } from "vee-validate"
-import { useUserStore } from '../stores/user'
-import { useNickNamesStore } from '../stores/nicknames'
-
-const emit = defineEmits(["closeProfile"])
+import { useUserStore } from "../stores/user"
+import { useNickNamesStore } from "../stores/nicknames"
+import {
+  ArrowCircleLeftIcon,
+  ArrowCircleRightIcon,
+} from "@heroicons/vue/outline"
+import { parse } from "postcss"
 
 const myUser = useUserStore()
 const nickNames = useNickNamesStore()
-// We have local versions of these because user may not hit Save
-const firstName = ref(myUser.firstName)
-const nickName = ref(myUser.nickName)
-const lastName = ref(myUser.lastName)
-
-watchEffect(() => firstName.value = myUser.firstName)
-watchEffect(() => nickName.value = myUser.nickName)
-watchEffect(() => lastName.value = myUser.lastName)
+const nickNameIndex = ref(0)
+watch(nickNames, function (nicks) {
+  if (nicks.items && nicks.items.length > 0 && !myUser.nickName) myUser.nickName = nicks.items[0].text
+})
 
 function isRequiredFirstName(value) {
   return value ? true : "Required"
@@ -27,43 +26,50 @@ function isRequiredLastName(value) {
   return value ? true : "Required"
 }
 
-function onSubmit(values) {
-  const score = {
-    id: myUser.userName,
-    firstName: firstName.value,
-    nickName: nickName.value,
-    lastName: lastName.value,
+function changeNickName(change) {
+  if (change != 0){
+    nickNameIndex.value += change
+
+    if (nickNameIndex.value < 0) nickNameIndex.value = nickNames.items.length - 1
+    else if (nickNameIndex.value > nickNames.items.length - 1) nickNameIndex.value = 0
+
+    myUser.nickName = nickNames.items[nickNameIndex.value].text
   }
-  syncScoreAPI(score)
-  localStorage.setItem(`${myUser.username}-profile`, JSON.stringify(score))
-  myUser.firstName = firstName.value
-  myUser.nickName = nickName.value
-  myUser.lastName = lastName.value
-  emit("closeProfile")
-}
+  
+  const tmp = localStorage.getItem(`${myUser.userName}-profile`)
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max)
-}
-
-function changeNickName() {
-  nickName.value = nickNames.items[getRandomInt(nickNames.items.length)].text
+  if (tmp )
+  {
+    let json = JSON.parse(tmp)
+    json.firstName = myUser.firstName
+    json.nickName = myUser.nickName
+    json.lastName = myUser.lastName
+    json.synced = false
+    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(json))
+  }
+  else {
+    const score = {
+      id: myUser.userName,
+      firstName: myUser.firstName,
+      nickName: myUser.nickName,
+      lastName: myUser.lastName,
+      synced: false,
+    }
+    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(score))
+  }
 }
 
 </script>
 
 <template>
   <div>
-    <header>
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">Profile</h1>
-        <h1>{{ myUser.email }}</h1>
-      </div>
-    </header>
-    <Form @submit="onSubmit" class="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-8">
+    <Form
+      class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8"
+    >
       <div class="text-left mt-1">
         <Field
-          v-model="firstName"
+          @blur="changeNickName(0)"
+          v-model="myUser.firstName"
           name="first-name"
           type="text"
           :rules="isRequiredFirstName"
@@ -87,31 +93,13 @@ function changeNickName() {
           style="padding-left: 18px"
         />
       </div>
-      <div class="mt-1">
-        <button
-          type="button"
-          @click="changeNickName"
-          class="
-            bg-transparent
-            hover:bg-blue-500
-            text-blue-700
-            font-semibold
-            hover:text-white
-            py-2
-            px-4
-            border border-blue-500
-            hover:border-transparent
-            rounded
-          "
-        >
-          '{{ nickName }}'
-        </button>
-      </div>
+
       <div class="text-left mt-1">
         <Field
-          v-model="lastName"
+          @blur="changeNickName(0)"
+          v-model="myUser.lastName"
           name="last-name"
-          type="name"
+          type="text"
           :rules="isRequiredLastName"
           placeholder="Last Name"
           class="
@@ -133,20 +121,25 @@ function changeNickName() {
           style="padding-left: 18px"
         />
       </div>
-      <div>
+      <div class="sm:col-span-2 text-left">
+        <span class="text-lg text-gray-500">Nick Name: </span><span class="text-xl text-black font-bold">{{ myUser.nickName }}</span>
+      </div>
+      <div class="inline-flex">
         <button
-          class="
-            bg-blue-500
-            hover:bg-blue-700
-            text-white
-            font-bold
-            py-2
-            px-4
-            border border-blue-700
-            rounded
-          "
+          type="button"
+          class="inline-flex bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-l"
+          @click="changeNickName(-1)"
         >
-          Save
+          <ArrowCircleLeftIcon class="h-6 w-6" aria-hidden="true" />
+          <span>Prev Nickname</span>
+        </button>
+       <button
+          type="button"
+          class="inline-flex bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
+          @click="changeNickName(1)"
+        >
+          <span>Next Nickname</span>
+          <ArrowCircleRightIcon class="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
     </Form>

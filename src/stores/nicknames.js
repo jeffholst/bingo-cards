@@ -18,20 +18,23 @@ export const useNickNamesStore = defineStore({
         },
 
         async getNickNames() {
-            const tmp = localStorage.getItem('nicknames')
-
-            if (tmp) {
-                this.$patch({
-                    items: JSON.parse(tmp),
-                })
-            } else {
-                getNickNamesAPI().then((res) => {
+            await getNickNamesAPI().then((res) => {
+                if (res) {
                     localStorage.setItem('nicknames', JSON.stringify(res))
                     this.$patch({
                         items: res,
                     })
-                })
-            }
+                }
+                else {
+                    const tmp = localStorage.getItem('nicknames')
+
+                    if (tmp) {
+                        this.$patch({
+                            items: JSON.parse(tmp),
+                        })
+                    }
+                }
+            })
         },
     }
 
