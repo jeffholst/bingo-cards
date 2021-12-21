@@ -116,8 +116,9 @@ export const useUserStore = defineStore({
                     console.log("Card from local storage")
                     this.cardItems = JSON.parse(tmp)
                     this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
+                    this.insertAllItems()
                 } else {
-                    // try to get from server
+                    // Generate a new card
                     getItemsAPI().then((res) => {
                         console.log("Card created")
                         helper.shuffle(res)
