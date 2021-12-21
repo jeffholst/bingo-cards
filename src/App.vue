@@ -17,6 +17,13 @@ import { useUserStore } from './stores/user'
 import { useNickNamesStore } from "./stores/nicknames"
 import { useStatusStore } from "./stores/status"
 import * as helper from "./helper"
+import { useRegisterSW } from 'virtual:pwa-register/vue'
+
+const {
+  offlineReady,
+  needRefresh,
+  updateServiceWorker,
+} = useRegisterSW()
 
 const version = import.meta.env.VITE_APP_VERSION
 const currentPage = ref('My Card')
