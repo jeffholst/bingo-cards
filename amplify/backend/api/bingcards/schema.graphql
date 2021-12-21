@@ -12,7 +12,7 @@ type Card @model {
   text: String
   selected: Boolean
   sortOrder: Int
-  owner: String
+  owner: ID! @index(name: "byOwner", queryField: "cardsByOwner")
   synced: Boolean
 }
 

@@ -1,6 +1,6 @@
 // @ts-check
 import { defineStore } from 'pinia'
-import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI, syncPendingItems, syncPendingScores } from "../api"
+import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI, syncPendingItems, syncPendingScores, getCardByOwnerAPI } from "../api"
 import { v4 as uuidv4 } from "uuid"
 import { useNickNamesStore } from './nicknames'
 import * as helper from '../helper'
@@ -101,7 +101,8 @@ export const useUserStore = defineStore({
     },
 
     getCard(userName) {
-        getCardAPI(userName).then((res) => {
+        //getCardAPI(userName).then((res) => {
+        getCardByOwnerAPI(userName).then((res) => {
             if (res && res.length > 0) {
                 console.log("Card from database")
                 res.sort(function(a, b) {

@@ -34,7 +34,7 @@ export declare class Card {
   readonly text?: string;
   readonly selected?: boolean;
   readonly sortOrder?: number;
-  readonly owner?: string;
+  readonly owner: string;
   readonly synced?: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;

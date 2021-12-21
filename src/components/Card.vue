@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { deleteCardAPI, syncCardAPI, getCardAPI, deleteScoreAPI } from "../api"
+import { deleteCardAPI, syncCardAPI, getCardAPI, deleteScoreAPI, getCardByOwnerAPI } from "../api"
 import { useUserStore } from "../stores/user"
 import * as helper from "../helper"
 
@@ -42,7 +42,8 @@ function deleteCard() {
     bingo: false,
   }
   syncScoreAPI(score)
-  getCardAPI(props.userName).then((res) => {
+  //getCardAPI(props.userName).then((res) => {
+  getCardByOwnerAPI(props.userName).then((res) => {
     if (res && res.length > 0) {
       for (var loop = 0; loop < res.length; loop++) {
         deleteCardAPI(res[loop].id)

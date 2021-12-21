@@ -131,3 +131,32 @@ export const listNickNames = /* GraphQL */ `
     }
   }
 `;
+export const cardsByOwner = /* GraphQL */ `
+  query CardsByOwner(
+    $owner: ID
+    $sortDirection: ModelSortDirection
+    $filter: ModelCardFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    cardsByOwner(
+      owner: $owner
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        text
+        selected
+        sortOrder
+        owner
+        synced
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

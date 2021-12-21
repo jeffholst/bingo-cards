@@ -77,8 +77,8 @@ export const schema = {
                 "owner": {
                     "name": "owner",
                     "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
+                    "type": "ID",
+                    "isRequired": true,
                     "attributes": []
                 },
                 "synced": {
@@ -111,6 +111,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byOwner",
+                        "fields": [
+                            "owner"
+                        ]
+                    }
                 }
             ]
         },
@@ -252,5 +261,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "904b0de83383262db81bdcaad0c080f8"
+    "version": "b669dcb6abd98e1cc924d79a4bf4eda1"
 };

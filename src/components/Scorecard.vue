@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { getScoresAPI, getCardAPI } from "../api"
+import { getScoresAPI, getCardAPI, getCardByOwnerAPI} from "../api"
 import * as subscriptions from "../graphql/subscriptions"
 import { API, graphqlOperation } from "aws-amplify"
 import Card from "./Card.vue"
@@ -59,7 +59,8 @@ function getScores(navToLeader) {
 function clickedUser(userName, fName, nName, lName) {
   console.log(userName, fName, nName, lName)
   lastUserName.value = userName
-  getCardAPI(userName).then((res) => {
+  //getCardAPI(userName).then((res) => {
+  getCardByOwnerAPI(userName).then((res) => {
     if (res) {
       res.sort(function (a, b) {
         return a.sortOrder - b.sortOrder
