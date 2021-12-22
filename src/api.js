@@ -38,7 +38,6 @@ const getCardByOwnerAPI = async (owner) => {
     const result = await API.graphql(graphqlOperation(cardsByOwner, {owner: owner}))
     return result.data.cardsByOwner.items
   } catch(error) {
-    debugger
     console.log(error)
     return null
   }

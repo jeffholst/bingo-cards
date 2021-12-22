@@ -25,14 +25,19 @@ const name = ref("")
 const myUser = useUserStore()
 
 function toggleSelect(findId) {
-  if (props.canEdit) {
+  if (props.canEdit || myUser.isAdmin) {
     const result = props.cardItems.find(({ id }) => id === findId)
     result.selected = !result.selected
-    myUser.hasBingo = helper.checkForBingo(props.cardItems)
-    helper.reScore(myUser.userName, props.cardItems, myUser.hasBingo)
+    let hasBingo = helper.checkForBingo(props.cardItems)
+    helper.reScore(props.userName, props.cardItems, hasBingo)
+    if (myUser.userName === props.userName) {
+      myUser.hasBingo = hasBingo
+    }
     syncCardAPI(findId, result.selected).then((res) => {
       result.synced = res
-      localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
+      if (myUser.userName === props.userName) {
+        localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
+      }
     })
   }
 }

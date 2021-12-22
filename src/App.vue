@@ -44,7 +44,10 @@ const myTimeout = setInterval(function() {syncPendingItems(myUser.cardItems, myU
 async function checkForCurrentlyAuthenticated() {
     try {
         const authUser = await Auth.currentAuthenticatedUser();
+        myUser.signIn()
+        status.updateStatus(true)
         myUser.login(authUser.username, true)
+        goToBingoNav()
     } catch {
     }
 }
@@ -55,12 +58,14 @@ checkForCurrentlyAuthenticated()
 const listener = (data) => {
   switch (data.payload.event) {
     case 'signIn':
+      console.log('user singned in')
       userSignedIn(data)
       break;
     case 'signUp':
       console.log('user signed up');
       break;
     case 'signOut':
+      logoutUser()
       console.log('user signed out');
       break;
     case 'signIn_failure':
@@ -98,6 +103,8 @@ function goToBingoNav() {
 }
 
 async function userSignedIn(data) {
+  myUser.signIn()
+  status.updateStatus(true)
   await myUser.login(data.payload.data.username, false)
 
   getScoreAPI(data.payload.data.username).then(res => {
@@ -130,6 +137,12 @@ async function userSignedIn(data) {
       }
     }
   })
+}
+
+function logoutUser() {
+  goToBingoNav()
+  myUser.logout()
+  status.logout()
 }
 
 </script>

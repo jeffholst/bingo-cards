@@ -14,17 +14,32 @@ export const useUserStore = defineStore({
     lastName: '',
     isAdmin: false,
     email: '',
-    navigation: [
-        { name: 'My Card', href: '#', current: true },
-        { name: 'Leaderboard', href: '#', current: false },
-        { name: 'Profile', href: '#', current: false },
-        ],
+    navigation: [],
     cardItems: [],
     hasBingo: false,
     needsSync: false,
   }),
 
   actions: {
+    signIn() {
+        this.$patch({ 
+        userName: '',
+        firstName: '',
+        nickName: '',
+        lastName: '',
+        isAdmin: false,
+        email: '',
+        navigation: [
+                { name: 'My Card', href: '#', current: true },
+                { name: 'Leaderboard', href: '#', current: false },
+                { name: 'Profile', href: '#', current: false },
+            ],
+        cardItems: [],
+        hasBingo: false,
+        needsSync: false,
+        })
+    },
+    
     logout() {
       this.$patch({
         userName: '',
