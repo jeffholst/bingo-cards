@@ -125,12 +125,11 @@ function deleteCard() {
         <button
           v-for="item in props.cardItems"
           :key="item.id"
-          class="border border-black bg-white"
+          class="border border-black text-sm"
           v-bind:class="[
-            { 'bg-indigo-500': item.selected && props.canEdit },
-            { 'text-white': item.selected && props.canEdit },
-            { 'bg-red-200': item.selected && !props.canEdit },
-            { 'text-indigo-500': item.selected && !props.canEdit },
+            { 'bg-yellow-100 text-black': !item.selected },
+            { 'bg-indigo-500 text-white': item.selected && props.canEdit },
+            { 'bg-red-200 text-black': item.selected && !props.canEdit },
           ]"
           @click="toggleSelect(item.id)"
         >
