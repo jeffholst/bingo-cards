@@ -8,7 +8,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectionRegister: 'inline',
-      includeAssets: ['robots.txt', '*.svg', '*.png', '/assets/*.*'],  
+      includeAssets: ['robots.txt', '*.svg', '*.png'],  
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5000000,
+      },
       manifest: {
         name: 'Hidden Creek Ranch Bingo',
         short_name: 'HCR Bingo',
