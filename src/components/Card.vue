@@ -121,11 +121,11 @@ function deleteCard() {
         <span class="text-purple-500">O</span>
         <span class="text-blue-800">!</span>
       </div>
-      <div class="grid grid-flow-col grid-cols-5 grid-rows-5">
+      <div class="grid grid-flow-col grid-cols-5 grid-rows-5 bg-yellow-400 gap-1 p-2 rounded">
         <button
           v-for="item in props.cardItems"
           :key="item.id"
-          class="border"
+          class="border border-black bg-white"
           v-bind:class="[
             { 'bg-indigo-500': item.selected && props.canEdit },
             { 'text-white': item.selected && props.canEdit },
