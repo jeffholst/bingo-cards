@@ -18,6 +18,7 @@ import { useNickNamesStore } from "./stores/nicknames"
 import { useStatusStore } from "./stores/status"
 import * as helper from "./helper"
 import { useRegisterSW } from 'virtual:pwa-register/vue'
+import { get, set } from 'idb-keyval';
 
 const {
   offlineReady,
@@ -34,6 +35,14 @@ const myUser = useUserStore()
 const nickNames = useNickNamesStore()
 const status = useStatusStore()
 const initials = computed(() => `${myUser.firstName.substring(0, 1)}${myUser.lastName.substring(0, 1)}`)
+const counter = ref(0)
+
+get('counter').then((val) => {
+  console.log(`counter: ${val}`)
+  if (!val) { counter.value = 1; console.log("Initialized counter") }
+  else { counter.value = val + 1; console.log("Incremented counter") }
+  set('counter', counter.value)
+});
 
 window.addEventListener('offline', function(e) { console.log('offline'); status.updateStatus(false)}) 
 
@@ -230,6 +239,7 @@ function logoutUser() {
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <!-- Replace with your content -->
+          <h1>Counter Test {{ counter }}</h1>
           <Bingo v-show="currentPage === 'My Card'"/>
           <Profile v-show="currentPage === 'Profile'" @close-profile="goToBingoNav"/>
           <Scorecard v-show="currentPage === 'Leaderboard'"/>
