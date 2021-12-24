@@ -40,7 +40,6 @@ function toggleSelect(findId) {
         //localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
         set(myUser.userName, JSON.stringify(props.cardItems)).then((val) => {
         }).catch((err) => {
-          debugger
         })
       }
     })

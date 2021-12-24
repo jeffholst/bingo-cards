@@ -28,7 +28,7 @@
 
 <template>
     <div>
-        <h1>NickNames</h1>
+        <h1>NickNames: {{nickNames.items.length}}</h1>
         <input v-model="newItem" @keyup.enter="addItem" class="border-2">
         <button @click="addItem">Add Item</button>
         <div v-for="item in nickNames.items.sort(propComparator('text'))" :key="item.id">

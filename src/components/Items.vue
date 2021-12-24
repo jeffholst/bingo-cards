@@ -32,7 +32,7 @@
 
 <template>
     <div>
-        <h1>Admin Area</h1>
+        <h1>Items: {{items.length}}</h1>
         <input v-model="newItem" @keyup.enter="addItem" class="border-2">
         <button @click="addItem">Add Item</button>
         <div v-for="item in items" :key="item.id">

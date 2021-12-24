@@ -32,7 +32,7 @@ export const useNickNamesStore = defineStore({
                     const tmp = get('nicknames').then((val) => {
                         if (val) {
                         this.$patch({
-                            items: val,
+                            items: JSON.parse(val),
                         })
                     }
                     })

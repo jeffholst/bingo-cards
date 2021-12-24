@@ -106,7 +106,7 @@ export const useUserStore = defineStore({
                 //const tmp = localStorage.getItem(`${userName}-profile`)
                 const tmp = get(`${userName}-profile`).then((val) => {
                     if (val) {
-                        let profile = val
+                        let profile = JSON.parse(val)
                         this.$patch({
                             userName: userName,
                             firstName: profile.firstName,
@@ -138,7 +138,7 @@ export const useUserStore = defineStore({
                 const tmp = get(userName).then((val) => {
                     if (val) {
                         console.log("Card from local storage")
-                        this.cardItems = val
+                        this.cardItems = JSON.parse(val)
                         this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
                         this.insertAllItems()
                     } else {
