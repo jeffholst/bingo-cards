@@ -4,6 +4,7 @@ import { getScoreAPI, getCardAPI, getItemsAPI, addCardAPI, syncPendingItems, syn
 import { v4 as uuidv4 } from "uuid"
 import { useNickNamesStore } from './nicknames'
 import * as helper from '../helper'
+import { get, set } from 'idb-keyval';
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -91,7 +92,8 @@ export const useUserStore = defineStore({
 
         getScoreAPI(userName).then((res) => {
             if (res) {
-                localStorage.setItem(`${userName}-profile`, JSON.stringify(res))
+                //localStorage.setItem(`${userName}-profile`, JSON.stringify(res))
+                set(`${userName}-profile`, JSON.stringify(res))
                 this.$patch({
                     userName: userName,
                     firstName: res.firstName,
@@ -101,18 +103,20 @@ export const useUserStore = defineStore({
                     email: res.email,
                 })
             } else {
-                const tmp = localStorage.getItem(`${userName}-profile`)
-                if (tmp) {
-                    let profile = JSON.parse(tmp)
-                    this.$patch({
-                        userName: userName,
-                        firstName: profile.firstName,
-                        nickName: profile.nickName,
-                        lastName: profile.lastName,
-                        isAdmin: isAdministrator,
-                        email: profile.email,
-                    })
-                } 
+                //const tmp = localStorage.getItem(`${userName}-profile`)
+                const tmp = get(`${userName}-profile`).then((val) => {
+                    if (val) {
+                        let profile = val
+                        this.$patch({
+                            userName: userName,
+                            firstName: profile.firstName,
+                            nickName: profile.nickName,
+                            lastName: profile.lastName,
+                            isAdmin: isAdministrator,
+                            email: profile.email,
+                        })
+                    } 
+                })  
             }
         })
     },
@@ -127,33 +131,37 @@ export const useUserStore = defineStore({
                 })
                 this.cardItems = res
                 this.$patch({hasBingo: helper.checkForBingo(res)})
-                localStorage.setItem(userName, JSON.stringify(res))
+                //localStorage.setItem(userName, JSON.stringify(res))
+                set(userName, JSON.stringify(res))
             } else {
-                const tmp = localStorage.getItem(userName)
-                if (tmp) {
-                    console.log("Card from local storage")
-                    this.cardItems = JSON.parse(tmp)
-                    this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
-                    this.insertAllItems()
-                } else {
-                    // Generate a new card
-                    getItemsAPI().then((res) => {
-                        console.log("Card created")
-                        helper.shuffle(res)
-                        res.length = 25 // only keep 25 items
-                        for (var loop = 0; loop < res.length; loop++) {
-                            res[loop].id = uuidv4()
-                            res[loop].selected = false
-                            res[loop].synced = true
-                            res[loop].sortOrder = loop
-                            res[loop].owner = userName
-                        }
-                        localStorage.setItem(userName, JSON.stringify(res))
-                        this.cardItems = res
-                        this.insertAllItems()
+                //const tmp = localStorage.getItem(userName)
+                const tmp = get(userName).then((val) => {
+                    if (val) {
+                        console.log("Card from local storage")
+                        this.cardItems = val
                         this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
-                    })
-                }
+                        this.insertAllItems()
+                    } else {
+                        // Generate a new card
+                        getItemsAPI().then((res) => {
+                            console.log("Card created")
+                            helper.shuffle(res)
+                            res.length = 25 // only keep 25 items
+                            for (var loop = 0; loop < res.length; loop++) {
+                                res[loop].id = uuidv4()
+                                res[loop].selected = false
+                                res[loop].synced = true
+                                res[loop].sortOrder = loop
+                                res[loop].owner = userName
+                            }
+                            //localStorage.setItem(userName, JSON.stringify(res))
+                            set(userName, JSON.stringify(res))
+                            this.cardItems = res
+                            this.insertAllItems()
+                            this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
+                        })
+                    }
+                })   
             }
         })
     },
@@ -165,7 +173,8 @@ export const useUserStore = defineStore({
         this.getUser(userName)
 
         // Sync any pending cards from local storage before getting cards from database
-        const tmp = localStorage.getItem(userName)
+        //const tmp = localStorage.getItem(userName)
+        const tmp = await get(userName)
         if (tmp) {
             let cards = JSON.parse(tmp)
             await syncPendingItems(cards, userName)

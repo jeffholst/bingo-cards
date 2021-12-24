@@ -1,5 +1,6 @@
 import { syncScoreAPI } from "./api"
 import { useUserStore } from "./stores/user"
+import { get, set } from 'idb-keyval';
 
 function checkForBingo(cardItems) {
   let l1, l2, index
@@ -85,10 +86,11 @@ function shuffle(array) {
 }
 
 
-function updateProfile() {
+async function updateProfile() {
   const myUser = useUserStore()
   
-  const tmp = localStorage.getItem(`${myUser.userName}-profile`)
+  //const tmp = localStorage.getItem(`${myUser.userName}-profile`)
+  const tmp = await get(`${myUser.userName}-profile`)
 
   if (tmp) {
     let json = JSON.parse(tmp)
@@ -96,7 +98,8 @@ function updateProfile() {
     json.nickName = myUser.nickName
     json.lastName = myUser.lastName
     json.synced = false
-    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(json))
+    //localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(json))
+    await set(`${myUser.userName}-profile`, JSON.stringify(json))
   } else {
     const score = {
       id: myUser.userName,
@@ -105,7 +108,8 @@ function updateProfile() {
       lastName: myUser.lastName,
       synced: false,
     }
-    localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(score))
+    //localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(score))
+    await set(`${myUser.userName}-profile`, JSON.stringify(score))
   }
 }
 

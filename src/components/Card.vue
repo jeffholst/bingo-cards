@@ -9,6 +9,7 @@ import {
 } from "../api"
 import { useUserStore } from "../stores/user"
 import * as helper from "../helper"
+import {  set } from 'idb-keyval';
 
 const props = defineProps({
   canEdit: Boolean,
@@ -36,7 +37,11 @@ function toggleSelect(findId) {
     syncCardAPI(findId, result.selected).then((res) => {
       result.synced = res
       if (myUser.userName === props.userName) {
-        localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
+        //localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
+        set(myUser.userName, JSON.stringify(props.cardItems)).then((val) => {
+        }).catch((err) => {
+          debugger
+        })
       }
     })
   }

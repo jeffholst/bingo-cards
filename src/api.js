@@ -4,6 +4,7 @@ import { API, graphqlOperation} from 'aws-amplify'
 import { listItems, listCards, listNickNames, getScore, listScores, cardsByOwner } from './graphql/queries';
 import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickName, deleteNickName, createScore, updateScore, deleteScore} from './graphql/mutations'
 import * as helper from "./helper"
+import { get, set } from 'idb-keyval';
 
 const getItemsAPI = async () => {
   const result = await API.graphql(graphqlOperation(listItems, {limit: 1000}))
@@ -110,7 +111,8 @@ const syncPendingItems = async (cardItems, userName) => {
       await syncCardAPI(cardItems[loop].id, cardItems[loop].selected).then((res) => {
         if (res) {
           cardItems[loop].synced = true
-          localStorage.setItem(userName, JSON.stringify(cardItems))
+          //localStorage.setItem(userName, JSON.stringify(cardItems))
+          set(userName, JSON.stringify(cardItems))
         }
       })
     }
@@ -123,9 +125,10 @@ const syncPendingItems = async (cardItems, userName) => {
 }
 
 const syncPendingScores = async (userName) => {
-  const tmp = localStorage.getItem(`${userName}-profile`)
+  //const tmp = localStorage.getItem(`${userName}-profile`)
+  const tmp = await get(`${userName}-profile`)
   if (tmp) {
-     let json = JSON.parse(tmp)
+    let json = JSON.parse(tmp)
      if (!json.synced) {
        const newScore = {
          id: json.id,
@@ -136,7 +139,8 @@ const syncPendingScores = async (userName) => {
        await syncScoreAPI(newScore).then((res) => {
          if (res) {
           json.synced = true
-          localStorage.setItem(`${userName}-profile`, JSON.stringify(json))
+          //localStorage.setItem(`${userName}-profile`, JSON.stringify(json))
+          set(`${userName}-profile`, JSON.stringify(json))
          }
        })
      }
