@@ -87,9 +87,7 @@ export const useUserStore = defineStore({
 
     async getUser(userName) {
         let isAdministrator = this.checkForAdministrator(userName)
-
         await syncPendingScores(userName)
-
         getScoreAPI(userName).then((res) => {
             if (res) {
                 //localStorage.setItem(`${userName}-profile`, JSON.stringify(res))

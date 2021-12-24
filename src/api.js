@@ -75,8 +75,13 @@ const deleteNickNameAPI = async (itemId) => {
 }
 
 const getScoreAPI = async (id) => {
+  try {
   const result = await API.graphql(graphqlOperation(getScore, {id: id}))
   return result.data.getScore
+  } catch(error) {
+    console.log(error)
+    return null
+  }
 }
 
 const addScoreAPI = async (score) => {
@@ -95,8 +100,13 @@ const syncScoreAPI = async (score) => {
 }
 
 const getScoresAPI = async () => {
-  const result = await API.graphql(graphqlOperation(listScores, {limit: 1000}))
-  return result.data.listScores.items
+  try {
+    const result = await API.graphql(graphqlOperation(listScores, {limit: 1000}))
+    return result.data.listScores.items
+  } catch(error) {
+    console.log(error)
+    return null
+  }
 }
 
 const deleteCardAPI = async (itemId) => {
