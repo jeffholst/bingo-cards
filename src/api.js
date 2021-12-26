@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { API, graphqlOperation} from 'aws-amplify'
 //import { Item } from './models'
-import { listItems, listCards, listNickNames, getScore, listScores, cardsByOwner } from './graphql/queries';
-import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickName, deleteNickName, createScore, updateScore, deleteScore} from './graphql/mutations'
+import { listItems, listCards, listNickNames, getScore, listScores, cardsByOwner, listGames, getGame } from './graphql/queries';
+import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickName, deleteNickName, createScore, 
+updateScore, deleteScore, createGame, deleteGame, updateGame} from './graphql/mutations'
 import * as helper from "./helper"
 import { get, set } from 'idb-keyval';
 
@@ -12,7 +13,12 @@ const getItemsAPI = async () => {
 }
 
 const addItemAPI = async (item) => {
-  await API.graphql(graphqlOperation(createItem, {input: item}))
+  try {
+    await API.graphql(graphqlOperation(createItem, {input: item}))
+  }
+  catch(error) {
+    console.log(error)
+  }
 }
 
 const deleteItemAPI = async (itemId) => {
@@ -20,23 +26,28 @@ const deleteItemAPI = async (itemId) => {
 }
 
 const addCardAPI = async (card) => {
-  await API.graphql(graphqlOperation(createCard, {input: card}))
+  try {
+    await API.graphql(graphqlOperation(createCard, {input: card}))
+  }
+  catch(error) {
+    console.log(error)
+  }
 }
 
-const syncCardAPI = async (id, selected) => {
+const syncCardAPI = async (id, selected, gameId) => {
   let rval = false
   try {
-    const res = await API.graphql(graphqlOperation(updateCard, {input: {id: id, selected: selected, synced: true}}))
+    const res = await API.graphql(graphqlOperation(updateCard, {input: {id: id, gameId: gameId, selected: selected, synced: true}}))
     rval = true
   } catch {
   }
   return rval
 }
 
-const getCardByOwnerAPI = async (owner) => {
+const getCardByOwnerAPI = async (owner, gameId) => {
   try {
     //const result = await API.graphql(graphqlOperation(cardsByOwner, {owner: owner, limit: 1000})) // limit should not be needed?
-    const result = await API.graphql(graphqlOperation(cardsByOwner, {owner: owner}))
+    const result = await API.graphql(graphqlOperation(cardsByOwner, {owner: owner, filter: {gameID: {eq: gameId}}, limit: 1000}))
     return result.data.cardsByOwner.items
   } catch(error) {
     console.log(error)
@@ -161,7 +172,41 @@ const deleteScoreAPI = async (scoreId) => {
   await API.graphql(graphqlOperation(deleteScore, {input: {id: scoreId}}))
 }
 
+const getGamesAPI = async () => {
+  const result = await API.graphql(graphqlOperation(listGames, {limit: 1000}))
+  return result.data.listGames.items
+}
+
+const deleteGameAPI = async (id) => {
+  await API.graphql(graphqlOperation(deleteGame, {input: {id: id}}))
+}
+
+const addGameAPI = async (game) => {
+  await API.graphql(graphqlOperation(createGame, {input: game}))
+}
+
+const syncGameAPI = async (id, gameOver) => {
+  let rval = false
+  try {
+    const res = await API.graphql(graphqlOperation(updateGame, {input: {id: id, gameOver: gameOver}}))
+    rval = true
+  } catch {
+  }
+  return rval
+}
+
+const getGameAPI = async (id) => {
+  try {
+  const result = await API.graphql(graphqlOperation(getGame, {id: id}))
+  return result.data.getGame
+  } catch(error) {
+    console.log(error)
+    return null
+  }
+}
+
 export {
   getItemsAPI, addItemAPI, deleteItemAPI, addCardAPI, syncCardAPI, getCardAPI, getNickNamesAPI, addNickNameAPI, deleteNickNameAPI,
-  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingItems, deleteScoreAPI, syncPendingScores, getCardByOwnerAPI
+  getScoreAPI, addScoreAPI, syncScoreAPI, getScoresAPI, deleteCardAPI, syncPendingItems, deleteScoreAPI, syncPendingScores, getCardByOwnerAPI,
+  getGamesAPI, deleteGameAPI, addGameAPI, syncGameAPI, getGameAPI
 }

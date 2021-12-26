@@ -4,6 +4,10 @@ import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplif
 
 
 
+type GameMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type ItemMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -20,8 +24,20 @@ type NickNameMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+export declare class Game {
+  readonly id: string;
+  readonly name?: string;
+  readonly gameOver?: boolean;
+  readonly items?: (Item | null)[];
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  constructor(init: ModelInit<Game, GameMetaData>);
+  static copyOf(source: Game, mutator: (draft: MutableModel<Game, GameMetaData>) => MutableModel<Game, GameMetaData> | void): Game;
+}
+
 export declare class Item {
   readonly id: string;
+  readonly gameID: string;
   readonly text: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
@@ -35,6 +51,7 @@ export declare class Card {
   readonly selected?: boolean;
   readonly sortOrder?: number;
   readonly owner: string;
+  readonly gameID: string;
   readonly synced?: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;

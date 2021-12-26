@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from "vue"
-import { getScoresAPI, getCardAPI, getCardByOwnerAPI} from "../api"
+import { getScoresAPI, getCardAPI, getCardByOwnerAPI, getGamesAPI} from "../api"
 import * as subscriptions from "../graphql/subscriptions"
 import { API, graphqlOperation } from "aws-amplify"
 import Card from "./Card.vue"
 import { useUserStore } from "../stores/user"
 import { useStatusStore } from "../stores/status"
+import { get } from 'idb-keyval';
 
 const items = ref([])
 const myUser = useUserStore()
@@ -57,12 +58,19 @@ function getScores(showLoading) {
   })
 }
 
-function clickedUser(userName, fName, nName, lName, showLoading) {
+async function clickedUser(userName, fName, nName, lName, showLoading) {
+  window.scrollTo(0, top);
   console.log(userName, fName, nName, lName)
   lastUserName.value = userName
   if (showLoading) cardItems.value = null
+  let gameId = myUser.game.id
+  if (!gameId) {
+    const games = await getGamesAPI()
+    const currentGame = games.find( ({ gameOver }) => gameOver === false );
+    gameId = currentGame.id
+  }
   //getCardAPI(userName).then((res) => {
-  getCardByOwnerAPI(userName).then((res) => {
+  getCardByOwnerAPI(userName, gameId).then((res) => {
     if (res) {
       res.sort(function (a, b) {
         return a.sortOrder - b.sortOrder

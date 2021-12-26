@@ -1,6 +1,78 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createGame = /* GraphQL */ `
+  mutation CreateGame(
+    $input: CreateGameInput!
+    $condition: ModelGameConditionInput
+  ) {
+    createGame(input: $input, condition: $condition) {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateGame = /* GraphQL */ `
+  mutation UpdateGame(
+    $input: UpdateGameInput!
+    $condition: ModelGameConditionInput
+  ) {
+    updateGame(input: $input, condition: $condition) {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteGame = /* GraphQL */ `
+  mutation DeleteGame(
+    $input: DeleteGameInput!
+    $condition: ModelGameConditionInput
+  ) {
+    deleteGame(input: $input, condition: $condition) {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createItem = /* GraphQL */ `
   mutation CreateItem(
     $input: CreateItemInput!
@@ -8,6 +80,7 @@ export const createItem = /* GraphQL */ `
   ) {
     createItem(input: $input, condition: $condition) {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -21,6 +94,7 @@ export const updateItem = /* GraphQL */ `
   ) {
     updateItem(input: $input, condition: $condition) {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -34,6 +108,7 @@ export const deleteItem = /* GraphQL */ `
   ) {
     deleteItem(input: $input, condition: $condition) {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -51,6 +126,7 @@ export const createCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt
@@ -68,6 +144,7 @@ export const updateCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt
@@ -85,6 +162,7 @@ export const deleteCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt

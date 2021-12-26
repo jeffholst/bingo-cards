@@ -1,10 +1,53 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getGame = /* GraphQL */ `
+  query GetGame($id: ID!) {
+    getGame(id: $id) {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listGames = /* GraphQL */ `
+  query ListGames(
+    $filter: ModelGameFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listGames(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        gameOver
+        items {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getItem = /* GraphQL */ `
   query GetItem($id: ID!) {
     getItem(id: $id) {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -20,6 +63,7 @@ export const listItems = /* GraphQL */ `
     listItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        gameID
         text
         createdAt
         updatedAt
@@ -36,6 +80,7 @@ export const getCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt
@@ -55,6 +100,7 @@ export const listCards = /* GraphQL */ `
         selected
         sortOrder
         owner
+        gameID
         synced
         createdAt
         updatedAt
@@ -152,6 +198,37 @@ export const cardsByOwner = /* GraphQL */ `
         selected
         sortOrder
         owner
+        gameID
+        synced
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const cardsByGame = /* GraphQL */ `
+  query CardsByGame(
+    $gameID: ID
+    $sortDirection: ModelSortDirection
+    $filter: ModelCardFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    cardsByGame(
+      gameID: $gameID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        text
+        selected
+        sortOrder
+        owner
+        gameID
         synced
         createdAt
         updatedAt

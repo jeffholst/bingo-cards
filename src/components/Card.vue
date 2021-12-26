@@ -9,7 +9,7 @@ import {
 } from "../api"
 import { useUserStore } from "../stores/user"
 import * as helper from "../helper"
-import {  set } from 'idb-keyval';
+import { set } from "idb-keyval"
 
 const props = defineProps({
   canEdit: Boolean,
@@ -38,9 +38,9 @@ function toggleSelect(findId) {
       result.synced = res
       if (myUser.userName === props.userName) {
         //localStorage.setItem(myUser.userName, JSON.stringify(props.cardItems))
-        set(myUser.userName, JSON.stringify(props.cardItems)).then((val) => {
-        }).catch((err) => {
-        })
+        set(myUser.userName, JSON.stringify(props.cardItems))
+          .then((val) => {})
+          .catch((err) => {})
       }
     })
   }
@@ -125,20 +125,25 @@ function deleteCard() {
         <span class="text-purple-500">O</span>
         <span class="text-blue-800">!</span>
       </div>
-      <div class="grid grid-flow-col grid-cols-5 grid-rows-5 bg-yellow-400 gap-1 p-2 rounded">
-        <button
-          v-for="item in props.cardItems"
-          :key="item.id"
-          class="border border-black text-sm"
-          v-bind:class="[
-            { 'bg-yellow-100 text-black': !item.selected },
-            { 'bg-indigo-500 text-white': item.selected && props.canEdit },
-            { 'bg-red-200 text-black': item.selected && !props.canEdit },
-          ]"
-          @click="toggleSelect(item.id)"
-        >
-          {{ item.text }}
-        </button>
+      <div class="bg-yellow-400 gap-1 p-2 rounded">
+        <h1 class="font-bold text-3xl">
+          {{ myUser.game.name }}
+        </h1>
+        <div class="grid grid-flow-col grid-cols-5 grid-rows-5">
+          <button
+            v-for="item in props.cardItems"
+            :key="item.id"
+            class="border border-black text-sm"
+            v-bind:class="[
+              { 'bg-yellow-100 text-black': !item.selected },
+              { 'bg-indigo-500 text-white': item.selected && props.canEdit },
+              { 'bg-red-200 text-black': item.selected && !props.canEdit },
+            ]"
+            @click="toggleSelect(item.id)"
+          >
+            {{ item.text }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

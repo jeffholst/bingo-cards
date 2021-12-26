@@ -4,9 +4,10 @@ import { schema } from './schema';
 
 
 
-const { Item, Card, Score, NickName } = initSchema(schema);
+const { Game, Item, Card, Score, NickName } = initSchema(schema);
 
 export {
+  Game,
   Item,
   Card,
   Score,

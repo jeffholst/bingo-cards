@@ -2,8 +2,16 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+type Game @model {
+  id: ID!
+  name: String
+  gameOver: Boolean
+  items: [Item] @hasMany(indexName: "byGame", fields: ["id"])
+}
+
 type Item @model {
   id: ID!
+  gameID: ID! @index(name: "byGame", sortKeyFields: ["text"])
   text: String!
 }
 
@@ -13,6 +21,7 @@ type Card @model {
   selected: Boolean
   sortOrder: Int
   owner: ID! @index(name: "byOwner", queryField: "cardsByOwner")
+  gameID: ID! @index(name: "byGame", queryField: "cardsByGame")
   synced: Boolean
 }
 

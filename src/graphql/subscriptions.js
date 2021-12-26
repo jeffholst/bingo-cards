@@ -1,10 +1,74 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateGame = /* GraphQL */ `
+  subscription OnCreateGame {
+    onCreateGame {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateGame = /* GraphQL */ `
+  subscription OnUpdateGame {
+    onUpdateGame {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteGame = /* GraphQL */ `
+  subscription OnDeleteGame {
+    onDeleteGame {
+      id
+      name
+      gameOver
+      items {
+        items {
+          id
+          gameID
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateItem = /* GraphQL */ `
   subscription OnCreateItem {
     onCreateItem {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -15,6 +79,7 @@ export const onUpdateItem = /* GraphQL */ `
   subscription OnUpdateItem {
     onUpdateItem {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -25,6 +90,7 @@ export const onDeleteItem = /* GraphQL */ `
   subscription OnDeleteItem {
     onDeleteItem {
       id
+      gameID
       text
       createdAt
       updatedAt
@@ -39,6 +105,7 @@ export const onCreateCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt
@@ -53,6 +120,7 @@ export const onUpdateCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt
@@ -67,6 +135,7 @@ export const onDeleteCard = /* GraphQL */ `
       selected
       sortOrder
       owner
+      gameID
       synced
       createdAt
       updatedAt

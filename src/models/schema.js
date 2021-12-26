@@ -1,10 +1,81 @@
 export const schema = {
     "models": {
+        "Game": {
+            "name": "Game",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "gameOver": {
+                    "name": "gameOver",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "items": {
+                    "name": "items",
+                    "isArray": true,
+                    "type": {
+                        "model": "Item"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "gameID"
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Games",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                }
+            ]
+        },
         "Item": {
             "name": "Item",
             "fields": {
                 "id": {
                     "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "gameID": {
+                    "name": "gameID",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
@@ -40,6 +111,16 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byGame",
+                        "fields": [
+                            "gameID",
+                            "text"
+                        ]
+                    }
                 }
             ]
         },
@@ -76,6 +157,13 @@ export const schema = {
                 },
                 "owner": {
                     "name": "owner",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "gameID": {
+                    "name": "gameID",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
@@ -118,6 +206,15 @@ export const schema = {
                         "name": "byOwner",
                         "fields": [
                             "owner"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byGame",
+                        "fields": [
+                            "gameID"
                         ]
                     }
                 }
@@ -261,5 +358,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "b669dcb6abd98e1cc924d79a4bf4eda1"
+    "version": "5286a4285a9b512668c01ff6aa8d8e41"
 };

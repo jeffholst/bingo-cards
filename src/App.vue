@@ -6,6 +6,7 @@ import { ref, computed } from 'vue'
 import Bingo from './components/Bingo.vue'
 import Scorecard from './components/Scorecard.vue'
 import Items from './components/Items.vue'
+import Games from './components/Games.vue'
 import Profile from './components/Profile.vue'
 import NickNames from './components/NickNames.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
@@ -235,6 +236,7 @@ function logoutUser() {
           <Bingo v-show="currentPage === 'My Card'"/>
           <Profile v-show="currentPage === 'Profile'" @close-profile="goToBingoNav"/>
           <Scorecard v-show="currentPage === 'Leaderboard'"/>
+          <Games v-if="currentPage === 'Games'"/>
           <Items v-if="currentPage === 'Items'"/>
           <NickNames v-if="currentPage === 'NickNames'"/>
           <!-- /End replace -->
