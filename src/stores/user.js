@@ -194,7 +194,6 @@ export const useUserStore = defineStore({
         const nickNames = useNickNamesStore()
         nickNames.getNickNames()
         let currentGame
-        debugger
         const games = await getGamesAPI()
         if (games) {
             currentGame = games.find( ({ gameOver }) => gameOver === false );

@@ -6,6 +6,7 @@ import {
   getCardAPI,
   deleteScoreAPI,
   getCardByOwnerAPI,
+  syncScoreAPI
 } from "../api"
 import { useUserStore } from "../stores/user"
 import * as helper from "../helper"
@@ -57,8 +58,10 @@ function deleteCard() {
     bingo: false,
   }
   syncScoreAPI(score)
+  debugger
   //getCardAPI(props.userName).then((res) => {
-  getCardByOwnerAPI(props.userName).then((res) => {
+  getCardByOwnerAPI(props.userName, myUser.game.id).then((res) => {
+    debugger
     if (res && res.length > 0) {
       for (var loop = 0; loop < res.length; loop++) {
         deleteCardAPI(res[loop].id)
