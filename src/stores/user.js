@@ -165,6 +165,7 @@ export const useUserStore = defineStore({
 
     async getCard(userName, currentGame) {
         //getCardAPI(userName).then((res) => {
+        debugger
         const res = await getCardByOwnerAPI(userName, currentGame.id)
         if (res && res.length > 0) {
             console.log("Card from database")
@@ -176,15 +177,23 @@ export const useUserStore = defineStore({
             //localStorage.setItem(userName, JSON.stringify(res))
             set(userName, JSON.stringify(res))
         } else {
+            debugger
             //const tmp = localStorage.getItem(userName)
             const val = await get(userName)
             if (val) {
-                console.log("Card from local storage")
-                this.cardItems = JSON.parse(val)
-                this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
-                this.insertAllItems()
+                const ci = JSON.parse(val)
+                if ( ci.length > 0 && ci[0].gameID === currentGame.id ) {
+                    console.log("Card from local storage")
+                    this.cardItems = ci
+                    this.$patch({hasBingo: helper.checkForBingo(this.cardItems)})
+                    this.insertAllItems()
+                } else {
+                    console.log("Card created 2")
+                    await this.newCard(currentGame, userName)
+                }   
             } else {
                 // Generate a new card
+                console.log("Card created 3")
                 await this.newCard(currentGame, userName)
             }
         }
