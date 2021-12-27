@@ -89,7 +89,7 @@ export const useUserStore = defineStore({
         }
     },
 
-    async getUser(userName, refresh) {
+    async getUser(userName) {
         let isAdministrator = this.checkForAdministrator(userName)
         //await syncPendingScores(userName)
         const res = await getScoreAPI(userName)
@@ -193,18 +193,23 @@ export const useUserStore = defineStore({
     async login(userName, cachedCreds) {
         const nickNames = useNickNamesStore()
         nickNames.getNickNames()
-
-        let refresh = false;
+        let currentGame
+        debugger
         const games = await getGamesAPI()
-        const currentGame = games.find( ({ gameOver }) => gameOver === false );
+        if (games) {
+            currentGame = games.find( ({ gameOver }) => gameOver === false );
+            set(`${userName}-game`, JSON.stringify(currentGame))
+        } else {
+            currentGame = JSON.parse(await get(`${userName}-game`))
+        }
         
         this.$patch({game: currentGame})
 
-        await this.getUser(userName, refresh)
+        await this.getUser(userName)
         // Sync any pending cards from local storage before getting cards from database
         //const tmp = localStorage.getItem(userName)
         const tmp = await get(userName)
-        if (tmp && !refresh) {
+        if (tmp) {
             let cards = JSON.parse(tmp)
             await syncPendingItems(cards, userName)
         }

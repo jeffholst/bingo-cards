@@ -167,8 +167,13 @@ const deleteScoreAPI = async (scoreId) => {
 }
 
 const getGamesAPI = async () => {
+  try {
   const result = await API.graphql(graphqlOperation(listGames, {limit: 1000}))
   return result.data.listGames.items
+  } catch(error) {
+    console.log(error)
+    return null
+  }
 }
 
 const deleteGameAPI = async (id) => {
