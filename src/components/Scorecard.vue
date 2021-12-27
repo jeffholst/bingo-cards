@@ -43,7 +43,9 @@ function getScores(showLoading) {
     items.value = res
 
     if (!lastUserName.value) {
-      clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName, true)
+      if (res && res.length > 0) {
+        clickedUser(res[0].id, res[0].firstName, res[0].nickName, res[0].lastName, true)
+      }
     }
     else {
       let index = res.findIndex(x => x.id === lastUserName.value)

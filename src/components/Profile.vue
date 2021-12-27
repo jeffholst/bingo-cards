@@ -8,6 +8,7 @@ import {
   ArrowCircleRightIcon,
 } from "@heroicons/vue/outline"
 import * as helper from "../helper"
+import { set } from 'idb-keyval';
 
 const myUser = useUserStore()
 const nickNames = useNickNamesStore()
@@ -37,7 +38,18 @@ function changeNickName(change) {
 
   myUser.nickName = nickNames.items[nickNameIndex.value].text
 
-  myUser.needsSync = true
+  saveProfile()
+}
+
+async function saveProfile() {
+  const res = {
+    id: myUser.userName,
+    firstName: myUser.firstName,
+    nickName: myUser.nickName,
+    lastName: myUser.lastName,
+    needsSync: true
+  }
+  await set(`${myUser.userName}-profile`, JSON.stringify(res))
 }
 
 function playBingo() {
@@ -74,7 +86,7 @@ function playBingo() {
     <Form class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
       <div class="text-left mt-1">
         <Field
-          @blur="myUser.needsSync = true"
+          @blur="saveProfile"
           v-model="myUser.firstName"
           name="first-name"
           type="text"
@@ -102,7 +114,7 @@ function playBingo() {
 
       <div class="text-left mt-1">
         <Field
-          @blur="myUser.needsSync = true"
+          @blur="saveProfile"
           v-model="myUser.lastName"
           name="last-name"
           type="text"

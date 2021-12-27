@@ -1,4 +1,4 @@
-import { syncScoreAPI } from "./api"
+import { syncPendingScores, syncScoreAPI } from "./api"
 import { useUserStore } from "./stores/user"
 import { get, set } from 'idb-keyval';
 
@@ -88,28 +88,23 @@ function shuffle(array) {
 
 async function updateProfile() {
   const myUser = useUserStore()
-  
-  //const tmp = localStorage.getItem(`${myUser.userName}-profile`)
   const tmp = await get(`${myUser.userName}-profile`)
 
   if (tmp) {
     let json = JSON.parse(tmp)
-    json.firstName = myUser.firstName
-    json.nickName = myUser.nickName
-    json.lastName = myUser.lastName
-    json.synced = false
-    //localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(json))
-    await set(`${myUser.userName}-profile`, JSON.stringify(json))
-  } else {
-    const score = {
-      id: myUser.userName,
-      firstName: myUser.firstName,
-      nickName: myUser.nickName,
-      lastName: myUser.lastName,
-      synced: false,
+
+    if (json.needsSync) {
+      const profile = {
+        id: json.id,
+        firstName: json.firstName,
+        nickName: json.nickName,
+        lastName: json.lastName,
+      }
+      const res = await syncScoreAPI(profile)
+      profile.needsSync = false;
+
+      await set(`${myUser.userName}-profile`, JSON.stringify(json))
     }
-    //localStorage.setItem(`${myUser.userName}-profile`, JSON.stringify(score))
-    await set(`${myUser.userName}-profile`, JSON.stringify(score))
   }
 }
 

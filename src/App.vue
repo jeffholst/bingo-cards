@@ -48,8 +48,9 @@ async function checkForCurrentlyAuthenticated() {
         const authUser = await Auth.currentAuthenticatedUser();
         myUser.signIn()
         status.updateStatus(true)
-        myUser.login(authUser.username, true)
-        goToBingoNav()
+        await myUser.login(authUser.username, true)
+        if (!myUser.firstName) changeNav('Profile')
+        else goToBingoNav()
     } catch {
     }
 }
@@ -83,9 +84,8 @@ Hub.listen('auth', listener);
 
 function changeNav(pageName) {
 
-  if (currentPage.value === "Profile" && myUser.needsSync) {
+  if (currentPage.value === "Profile") {
     helper.updateProfile()
-    myUser.needsSync = false
   }
 
   for (let loop = 0; loop < myUser.navigation.length; loop++) {
@@ -97,7 +97,7 @@ function changeNav(pageName) {
   }
   currentPage.value = pageName
 
-  if (pageName != "Profile") syncPendingScores(myUser.userName)
+  //if (pageName != "Profile") syncPendingScores(myUser.userName)
 }
 
 function goToBingoNav() {
@@ -108,37 +108,36 @@ async function userSignedIn(data) {
   myUser.signIn()
   status.updateStatus(true)
   await myUser.login(data.payload.data.username, false)
+  const res = await getScoreAPI(data.payload.data.username)
 
-  getScoreAPI(data.payload.data.username).then(res => {
-    // If user is not in database then let's add them
-    if (!res) {
-      const score = {
-        id: data.payload.data.username,
-        firstName: '',
-        nickName: '',
-        lastName: '',
-        email: data.payload.data.attributes.email,
-        score: 0,
-        bingo: false
-      }
-      addScoreAPI(score)
-      myUser.userName = data.payload.data.username
-      myUser.firstName = ''
-      myUser.nickName = ''
-      myUser.lastName = ''
+  // If user is not in database then let's add them
+  if (!res) {
+    const score = {
+      id: data.payload.data.username,
+      firstName: '',
+      nickName: '',
+      lastName: '',
+      email: data.payload.data.attributes.email,
+      score: 0,
+      bingo: false
+    }
+    addScoreAPI(score)
+    myUser.userName = data.payload.data.username
+    myUser.firstName = ''
+    myUser.nickName = ''
+    myUser.lastName = ''
+    changeNav('Profile')
+  }
+  else {
+    if (!res.firstName) {
       changeNav('Profile')
     }
     else {
-      if (!res.firstName) {
-        changeNav('Profile')
-      }
-      else {
-        firstName.value = res.firstName
-        lastName.value = res.lastName
-        nickName.value = res.nickName
-      }
+      firstName.value = res.firstName
+      lastName.value = res.lastName
+      nickName.value = res.nickName
     }
-  })
+  }
 }
 
 function logoutUser() {

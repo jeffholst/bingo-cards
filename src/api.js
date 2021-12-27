@@ -6,6 +6,7 @@ import { createItem, deleteItem, createCard, updateCard, deleteCard, createNickN
 updateScore, deleteScore, createGame, deleteGame, updateGame} from './graphql/mutations'
 import * as helper from "./helper"
 import { get, set } from 'idb-keyval';
+import { useUserStore } from "./stores/user"
 
 const getItemsAPI = async () => {
   const result = await API.graphql(graphqlOperation(listItems, {limit: 1000}))
@@ -125,6 +126,7 @@ const deleteCardAPI = async (itemId) => {
 }
 
 const syncPendingItems = async (cardItems, userName) => {
+  const myUser = useUserStore()
   let hadSync = false
   for (let loop = 0; loop < cardItems.length; loop++) {
     if (!cardItems[loop].synced) {
@@ -138,33 +140,25 @@ const syncPendingItems = async (cardItems, userName) => {
       })
     }
   }
-  if (hadSync){
+  if (hadSync) {
     helper.reScore(userName, cardItems)
   }
-
-  syncPendingScores(userName)
 }
 
 const syncPendingScores = async (userName) => {
-  //const tmp = localStorage.getItem(`${userName}-profile`)
-  const tmp = await get(`${userName}-profile`)
-  if (tmp) {
-    let json = JSON.parse(tmp)
-     if (!json.synced) {
-       const newScore = {
-         id: json.id,
-         firstName: json.firstName,
-         nickName: json.nickName,
-         lastName: json.lastName,
-       }
-       await syncScoreAPI(newScore).then((res) => {
-         if (res) {
-          json.synced = true
-          //localStorage.setItem(`${userName}-profile`, JSON.stringify(json))
-          set(`${userName}-profile`, JSON.stringify(json))
-         }
-       })
-     }
+  const val = await get(`${userName}-profile`)
+  if (val) {
+      let profile = JSON.parse(val)
+      if (profile.needsSync) {
+        const newScore = {
+          id: userName,
+          firstName: myUser.firstName,
+          nickName: myUser.nickName,
+          lastName: myUser.lastName,
+        }
+  
+        const res = await syncScoreAPI(newScore)
+      }
   }
 }
 
